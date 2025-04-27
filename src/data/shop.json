@@ -1,0 +1,73 @@
+[
+    {
+      "id": "1",
+      "name": "iPhone 14",
+      "price": "$799",
+      "description": "Apple's latest flagship smartphone with A15 Bionic chip.",
+      "image": "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_SL1500_.jpg"
+    },
+    {
+      "id": "2",
+      "name": "Samsung Galaxy S23",
+      "price": "$699",
+      "description": "Powerful Android phone with high-end performance.",
+      "image": "https://m.media-amazon.com/images/I/61RZDb2mQxL._AC_SL1500_.jpg"
+    },
+    {
+      "id": "3",
+      "name": "MacBook Air M2",
+      "price": "$999",
+      "description": "Super light laptop with Apple's M2 chip and long battery.",
+      "image": "https://m.media-amazon.com/images/I/71f5Eu5lJSL._AC_SL1500_.jpg"
+    },
+    {
+      "id": "4",
+      "name": "Dell XPS 13",
+      "price": "$899",
+      "description": "Premium Windows ultrabook with sleek design.",
+      "image": "https://www.bing.com/images/search?q=Dell%20XPS%2013%20hd%20image&FORM=IQFRBA&id=DB23C9BDDBABBF867F9B624CFC14AF50560A529D"
+    },
+    {
+      "id": "5",
+      "name": "Sony WH-1000XM5",
+      "price": "$349",
+      "description": "Top-notch noise-canceling wireless headphones.",
+      "image": "https://m.media-amazon.com/images/I/71o8Q5XJS5L._AC_SL1500_.jpg"
+    },
+    {
+      "id": "6",
+      "name": "AirPods Pro 2",
+      "price": "$249",
+      "description": "Apple's best wireless earbuds with active noise canceling.",
+      "image": "https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SL1500_.jpg"
+    },
+    {
+      "id": "7",
+      "name": "iPad Pro 11\"",
+      "price": "$799",
+      "description": "Powerful tablet for work and creativity with M1 chip.",
+      "image": "https://m.media-amazon.com/images/I/81c+9BOQNWL._AC_SL1500_.jpg"
+    },
+    {
+      "id": "8",
+      "name": "Amazon Kindle Paperwhite",
+      "price": "$129",
+      "description": "E-reader with glare-free screen and weeks of battery.",
+      "image": "https://www.gettyimages.in/detail/news-photo/kindle-paperwhite-reading-device-is-seen-at-a-press-news-photo/151371417"
+    },
+    {
+      "id": "9",
+      "name": "Samsung Galaxy Tab S8",
+      "price": "$699",
+      "description": "Android tablet with AMOLED display and stylus support.",
+      "image": "https://m.media-amazon.com/images/I/61RZDb2mQxL._AC_SL1500_.jpg"
+    },
+    {
+      "id": "10",
+      "name": "OnePlus 11",
+      "price": "$599",
+      "description": "Flagship killer phone with Snapdragon 8 Gen 2.",
+      "image": "https://m.media-amazon.com/images/I/61amb0CfMGL._AC_SL1500_.jpg"
+    }
+  ]
+  
