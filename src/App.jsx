@@ -10,7 +10,11 @@ import { ProductDetails } from "./pages/ProductDetails";
 import { Cart } from "./pages/Cart";
 import { useState } from "react";
 import { LoginPage } from "./redux/LoginPage";
+import { SignUp } from "./redux/SignUp";
 import { CartProvider } from "./context/CartContext";
+import {ForgotPassword} from "./pages/ForgotPassword";
+import {ResetPassword} from "./pages/ResetPassword";
+
 import './App.css';
 
 const App = () => {
@@ -59,11 +63,23 @@ const App = () => {
         },
         {
           path: "login",
-          element: <LoginPage
-           />
+          element: <LoginPage/>
+        },
+        {
+        path: "signup",
+        element: <SignUp />
+        },
+        {
+          path: "forgot-password",
+          element: <ForgotPassword  />
+        },
+        { 
+          path: "reset-password/:token",
+          element: <ResetPassword />
         }
       ]
-    }
+    },
+    
   ]);
 
   return (
