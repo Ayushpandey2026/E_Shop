@@ -1,15 +1,29 @@
 // src/pages/Home.jsx
-
-import React from "react";
-import productData from "../data/shop.json";
+import React, { useState, useEffect } from "react";
+// import productData from "../data/shop.json";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/CartSlice";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+// import { fetchProducts } from "../api/postApi";
+import axios from "axios";
 export const Home = () => {
   const dispatch = useDispatch();
+
+  const [productData, setProductData] = useState([]);
+
+  useEffect(()=>{
+        axios.get("http://localhost:8000/api/web/product")
+      .then((response) => {
+        setProductData(response.data);
+      }
+      )
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });    
+  },[]);
+
 
   // Slider settings
   const settings = {
@@ -55,7 +69,7 @@ export const Home = () => {
           {productData.slice(0, 8).map((item) => (
             <div className="featured-card" key={item.id}>
               <img src={item.image} alt={item.name} />
-              <h3>{item.name}</h3>
+              <h3>{item.title}</h3>
               <p>₹{item.price}</p>
               <button
                 className="btn"

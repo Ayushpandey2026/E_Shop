@@ -1,32 +1,49 @@
-import { useCart } from "../context/CartContext";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { clearCart, removeFromCart } from "../redux/CartSlice";
-export const Cart = () => {
-  // const {cartItems,removeFromCart}=useCart();
-  const cartItems=useSelector(state=>state.cart.items);
-  const dispatch=useDispatch();
-  
-  return (
+import "../style/cart.css";
 
-    
-    <div className="cart-container">
-      <h1 className="heading">Your Cart</h1>
+export const Cart = () => {
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
+
+  const totalPrice = cartItems.reduce((total, item) => total + item.price, 0);
+
+  return (
+    <div className="cart-page">
+      <h1 className="cart-heading">🛒 Your Shopping Cart</h1>
+
       {cartItems.length === 0 ? (
-        <p>No items in cart</p>
+        <p className="empty-cart">Your cart is empty.</p>
       ) : (
-        cartItems.map((item, index) => (
-          <div key={index} className="cart-item">
-            <img src={item.image} alt={item.name} width="80" />
-            <div>
-              <h3>{item.name}</h3>
-              <p>Price: ₹{item.price}</p>
-              <button className="btn" onClick={() => dispatch(removeFromCart(item.id))}>Remove</button>
-            </div>
+        <>
+          <div className="cart-items-wrapper">
+            {cartItems.map((item, index) => (
+              <div className="cart-item-card" key={index}>
+                <img src={item.image} alt={item.title} className="cart-img" />
+                <div className="cart-info">
+                  <h2 className="cart-title">{item.title}</h2>
+                  <p className="cart-category">Category: <span>{item.category}</span></p>
+                  <p className="cart-rating">⭐ {item.rating?.rate} ({item.rating?.count} reviews)</p>
+                  <p className="cart-price">₹{item.price}</p>
+                  <button
+                    className="remove-btn"
+                    onClick={() => dispatch(removeFromCart(item.id))}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))
+
+          <div className="cart-summary">
+            <p className="total-amount">Total: ₹{totalPrice.toFixed(2)}</p>
+            <button className="clear-btn" onClick={() => dispatch(clearCart())}>
+              Clear Cart
+            </button>
+          </div>
+        </>
       )}
-      <button className="btn" onClick={()=>dispatch(clearCart())}>Clear All</button>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";
 export const Header = () => {
   const cartItems=useSelector(state=>state.cart.items);
-  // const{isLoggedIn,logout}=useAuth();
+  const{isLoggedIn,logout}=useAuth();
   // const {cartItems}=useCart();
   return (
     <header className="navbar">
@@ -17,6 +17,7 @@ export const Header = () => {
           <NavLink to="/services" activeclassname="active">Services</NavLink>
           <NavLink to="/contact" activeclassname="active">Contact</NavLink>
           {/* {isLoggedIn && <button onClick={logout}>LogOut</button>} */}
+          <NavLink to="/login" activeclassname="active" onClick={logout}>Logout</NavLink>
           <NavLink to="/cart" className="cart-link" activeclassname="active">
           <div className="cart-icon-container">
           <MdShoppingCart className="cart-icon" />

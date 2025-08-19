@@ -8,7 +8,6 @@ import { Services } from "./pages/Services";
 import { Contact } from "./pages/Contact";
 import { ProductDetails } from "./pages/ProductDetails";
 import { Cart } from "./pages/Cart";
-import { useState } from "react";
 import { LoginPage } from "./redux/LoginPage";
 import { SignUp } from "./redux/SignUp";
 import { CartProvider } from "./context/CartContext";

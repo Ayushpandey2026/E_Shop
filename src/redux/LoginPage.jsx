@@ -53,7 +53,8 @@ export const LoginPage = () => {
           <button type="submit" className="submit">Login</button>
 
           <p>Don't have an account? <a href="/signup">Sign Up</a></p>
-          <a href="/forgot-password">Forgot Password?</a>
+          <p>Having trouble logging in?
+          <a href="/forgot-password">Forgot Password?</a></p>
         </div>
       </form>
     </div>

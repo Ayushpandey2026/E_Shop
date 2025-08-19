@@ -21,7 +21,7 @@ export const SignUp = () => {
       alert("Signup successful!");
       console.log("Signup successful:navigating to cart");
       
-      navigate("/product"); // Or home page
+      navigate("/product"); 
     } catch (error) {
         
      if(error.response && error.response.data && error.response.data.message){
