@@ -1,5 +1,5 @@
 import { FaShippingFast, FaUndo, FaHeadset, FaLock, FaMapMarkedAlt, FaHeart, FaGift, FaRegListAlt } from 'react-icons/fa';
-// import './App.css';
+import "../style/Service.css";
 export const Services = () => {
   const services = [
     {

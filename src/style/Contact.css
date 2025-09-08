@@ -1,0 +1,98 @@
+
+/* ===== Contact Page Container ===== */
+.contact-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #1f2937;
+  transition: all 0.3s ease;
+}
+
+/* Headings */
+.contact-container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.contact-container p {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* ===== Contact Form ===== */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== Form Group ===== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #6366f1;
+  background-color: #fff;
+  outline: none;
+}
+
+/* ===== Submit Button ===== */
+.submit-btn {
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+}
+
+.submit-btn:hover {
+  transform: scale(1.02);
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .contact-container {
+    padding: 25px 20px;
+  }
+
+  .contact-container h1 {
+    font-size: 1.6rem;
+  }
+}

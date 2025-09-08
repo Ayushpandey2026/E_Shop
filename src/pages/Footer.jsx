@@ -1,19 +1,21 @@
-import React from 'react';
+import "../style/Footer.css"; // Make sure this path is correct
 
 export const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-container">
-        
+        {/* Column 1 */}
         <div className="footer-col">
-          <h3>About Us</h3>
+          <h3>MyShop</h3>
           <p>
-            We are a leading ecommerce store bringing you the latest and greatest products at unbeatable prices.
+            Discover a seamless shopping experience with MyShop — quality
+            products, fast delivery, and top-notch support.
           </p>
         </div>
 
+        {/* Column 2 */}
         <div className="footer-col">
-          <h3>Quick Links</h3>
+          <h4>Quick Links</h4>
           <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/product">Products</a></li>
@@ -22,18 +24,29 @@ export const Footer = () => {
           </ul>
         </div>
 
+        {/* Column 3 */}
         <div className="footer-col">
-          <h3>Contact</h3>
-          <p>Email: support@example.com</p>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        {/* Column 4 */}
+        <div className="footer-col">
+          <h4>Contact Us</h4>
+          <p>Email: support@myshop.com</p>
           <p>Phone: +91 9876543210</p>
           <div className="social-icons">
             <a href="#"><i className="fab fa-facebook-f"></i></a>
             <a href="#"><i className="fab fa-instagram"></i></a>
             <a href="#"><i className="fab fa-twitter"></i></a>
-            <a href="#"><i className="fab fa-youtube"></i></a>
+            <a href="#"><i className="fab fa-linkedin-in"></i></a>
           </div>
         </div>
-
       </div>
 
       <div className="footer-bottom">

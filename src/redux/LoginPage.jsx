@@ -1,62 +1,74 @@
 import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext"; 
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../style/LoginPage.css"
+import { useNavigate, Link } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+// import { resetCart } from "../redux/CartSlice";
+
+// For example in logout handler:
+// dispatch(resetCart());
+
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const handleLogin =async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-   try{
-    const response =await axios.post("http://localhost:8000/api/web/auth/login", {
-      email,
-      password,
-    });
-        console.log("Login success:", response.data); // Debug log
-    login(response.data.token);
-    navigate("/cart");
-   }
-   catch (error) {
-    if(error.response && error.response.data && error.response.data.message){
-    alert(error.response.data.message);
-   }
-  }
+    try {
+      const res = await axios.post("http://localhost:8000/api/web/auth/login", {
+        email,
+        password,
+      });
+
+      // ✅ Token ko localStorage me save karna
+      localStorage.setItem("token", res.data.token);
+
+      // alert("Login Successful!");
+      navigate("/"); // dashboard/home par bhejo
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+    }
   };
 
   return (
-    <div className="cart-page">
-      <form className="login-form" onSubmit={handleLogin}>
-        <h1>Login</h1>
-        <div className="form-data">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            required
-            onChange={(e) => setEmail(e.target.value)}
-          />
+  <div className="login-container">
+    <form onSubmit={handleLogin} className="login-form">
+      <h2>Login</h2>
 
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            required
-            onChange={(e)=>setPassword(e.target.value)}
-          />
+      {error && <p className="error-message">{error}</p>}
 
-          <button type="submit" className="submit">Login</button>
+      <div className="input-group">
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
 
-          <p>Don't have an account? <a href="/signup">Sign Up</a></p>
-          <p>Having trouble logging in?
-          <a href="/forgot-password">Forgot Password?</a></p>
-        </div>
-      </form>
-    </div>
-  );
-};
+      <div className="input-group">
+        <label>Password</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      <button type="submit" className="login-button">
+        Login
+      </button>
+
+      <div className="login-links">
+        <Link to="/forgot-password">Forgot Password?</Link>
+        <Link to="/signup">Create Account</Link>
+      </div>
+    </form>
+  </div>
+);
+}

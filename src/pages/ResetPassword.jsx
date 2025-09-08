@@ -2,12 +2,11 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import "../style/ResetPassword.css"; // ✅ Import CSS
 
-export const  ResetPassword=()=> {
+export const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const { token } = useParams();
-  console.log("Reset Password Token:", token);
-  
 
   const handleReset = async (e) => {
     e.preventDefault();
@@ -22,46 +21,23 @@ export const  ResetPassword=()=> {
   };
 
   return (
-    <div style={containerStyle}>
-      <h2>Reset Password</h2>
-      <form onSubmit={handleReset}>
-        <label>
-          New Password:
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleReset}>
+        <h2 className="auth-title">🔐 Reset Password</h2>
+        
+        <div className="form-group">
+          <label>New Password</label>
           <input
             type="password"
             required
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            style={inputStyle}
+            placeholder="Enter new password"
           />
-        </label>
-        <button type="submit" style={buttonStyle}>
-          Reset Password
-        </button>
+        </div>
+
+        <button type="submit" className="submit-btn">Reset Password</button>
       </form>
     </div>
   );
-}
-
-
-// Styling
-const containerStyle = {
-  maxWidth: "400px",
-  margin: "auto",
-  padding: "20px",
-};
-
-const inputStyle = {
-  width: "100%",
-  marginTop: "5px",
-  padding: "8px",
-};
-
-const buttonStyle = {
-  marginTop: "15px",
-  padding: "10px 20px",
-  background: "green",
-  color: "white",
-  border: "none",
-  cursor: "pointer",
 };

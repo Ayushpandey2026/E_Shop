@@ -1,0 +1,132 @@
+/* ===== Banner ===== */
+.banner {
+  background: url("https://images.unsplash.com/photo-1606813902644-a548a2125b8b") center/cover no-repeat;
+  height: 70vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  text-align: center;
+  padding: 40px;
+  border-radius: 12px;
+}
+
+.banner-overlay h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.banner-overlay p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.shop-button {
+  padding: 12px 28px;
+  font-size: 1rem;
+  background: #2874f0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.shop-button:hover {
+  background: #0f62c9;
+  transform: scale(1.05);
+}
+
+/* ===== Featured Section ===== */
+.featured-section {
+  padding: 40px 60px;
+  background: #f5f5f5;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* ===== Featured Cards ===== */
+.featured-card {
+  padding: 10px;
+}
+
+.card-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+  padding: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.card-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.card-content img {
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.card-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.card-content p {
+  color: #1a8917;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* ===== Add to Cart Button ===== */
+.add-cart {
+  background: #ff9f00;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-cart:hover {
+  background: #fb641b;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .banner-overlay h1 {
+    font-size: 1.8rem;
+  }
+
+  .banner-overlay p {
+    font-size: 1rem;
+  }
+
+  .shop-button {
+    padding: 10px 22px;
+    font-size: 0.9rem;
+  }
+
+  .featured-section {
+    padding: 30px 20px;
+  }
+}

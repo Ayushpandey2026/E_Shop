@@ -1,0 +1,124 @@
+/* Navbar Base */
+.navbar {
+  background: #2874f0; /* Flipkart blue */
+  color: white;
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 20px;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #ffe11b;
+}
+
+/* Account Dropdown */
+.account-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.account-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: white;
+}
+
+.account-icon {
+  font-size: 24px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  right: 10px;
+  background: white;
+  color: black;
+  width: 180px;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  display: none;
+  flex-direction: column;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 14px;
+  color: black;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+}
+
+/* .dropdown-menu a:hover,
+.dropdown-menu button:hover {
+  background: #f1f1f1;
+} */
+
+/* Show dropdown on hover */
+.account-dropdown:hover .dropdown-menu {
+  display: flex;
+}
+
+/* Logout Button */
+.logout-btn {
+  color: red;
+  font-weight: 500;
+}
+
+/* Cart Icon */
+.cart-icon-container {
+  position: relative;
+}
+
+.cart-icon {
+  font-size: 24px;
+  color: white;
+}
+
+.cart-count-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: #ff6161;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+}

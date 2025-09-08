@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";   // ✅ CartProvider import
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Home } from "./pages/Home";
 import { Product } from "./pages/Product";
@@ -10,23 +11,18 @@ import { ProductDetails } from "./pages/ProductDetails";
 import { Cart } from "./pages/Cart";
 import { LoginPage } from "./redux/LoginPage";
 import { SignUp } from "./redux/SignUp";
-import { CartProvider } from "./context/CartContext";
-import {ForgotPassword} from "./pages/ForgotPassword";
-import {ResetPassword} from "./pages/ResetPassword";
-
+import { ForgotPassword } from "./pages/ForgotPassword";
+import { ResetPassword } from "./pages/ResetPassword";
+import { Orders } from "./pages/Order";
+import MyProfile from "./pages/MyProfile";
 import './App.css';
+import { EditAddress } from "./pages/EditAddress";
 
 const App = () => {
-  // const [cartItems, setCartItems] = useState([]);
-  // const addToCart=(product)=>{
-  //   setCartItems([...cartItems,product]);
-  //   console.log(cartItems);
-    
-  // };
   const router = createBrowserRouter([
     {
       path: "/",       
-      element: <PageLayout/>,
+      element: <PageLayout />,
       children: [
         {
           index: true,       
@@ -34,7 +30,7 @@ const App = () => {
         },
         {
           path: "product",   
-          element: <Product   />
+          element: <Product />
         },
         {
           path: "/product/:id",   
@@ -48,45 +44,54 @@ const App = () => {
           path: "contact",
           element: <Contact />
         },
-        // {
-        //   path: "cart",
-        //   element: <Cart />
-        // },
         {
           path: "cart",
-          element: (
-            <ProtectedRoute>
+          element:
               <Cart />
-            </ProtectedRoute>
-          )
         },
         {
           path: "login",
           element: <LoginPage/>
         },
         {
-        path: "signup",
-        element: <SignUp />
+          path: "signup",
+          element: <SignUp />
         },
         {
           path: "forgot-password",
-          element: <ForgotPassword  />
+          element: <ForgotPassword />
         },
         { 
           path: "reset-password/:token",
           element: <ResetPassword />
+        },
+        {
+          path:"orders",
+          element:<Orders/>
+        },
+        { path: "profile", 
+          element: <MyProfile /> 
+        },{
+          path:"/edit-address/new",
+          element:<EditAddress/>
         }
+
       ]
     },
-    
   ]);
 
   return (
     <AuthProvider>
-    <RouterProvider router={router} />
-  </AuthProvider>
+      <CartProvider>   {/* ✅ ab sari app ke andar CartContext accessible hoga */}
+        <RouterProvider router={router} />
+      </CartProvider>
+    </AuthProvider>
   );
 };
 
-export default App;
+ export default App;
+
+
+
+
 

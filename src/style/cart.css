@@ -1,138 +1,269 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f5f5f5;
-  margin: 0;
-  padding: 0;
+/* ===== Flipkart-Like Cart Container ===== */
+.cart-container {
+  padding: 30px 24px;
+  background: #f1f3f6;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  max-width: 1250px;
+  margin: auto;
 }
 
-.cart-page {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 0 20px;
-}
-
-.cart-heading {
-  font-size: 28px;
-  margin-bottom: 20px;
-  color: #222;
-  text-align: center;
-}
-
+/* ===== Empty Cart ===== */
 .empty-cart {
   text-align: center;
-  font-size: 18px;
-  color: #777;
-  margin-top: 100px;
+  padding: 80px 20px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.cart-items-wrapper {
+.empty-cart h2 {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.continue-shopping {
+  margin-top: 20px;
+  padding: 10px 24px;
+  border: 1px solid #2874f0;
+  border-radius: 4px;
+  background-color: #2874f0;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.continue-shopping:hover {
+  background-color: #0b5ed7;
+}
+
+/* ===== Cart Layout ===== */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 20px;
+}
+
+/* ===== Address Section ===== */
+.address-section {
+  background: #fff;
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+  margin-bottom: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212121;
+}
+
+.change-btn {
+  border: none;
+  background: none;
+  color: #2874f0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.address-text {
+  margin-top: 6px;
+  color: #555;
+  font-size: 0.92rem;
+}
+
+/* ===== Cart Items ===== */
+.cart-items {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-.cart-item-card {
+.cart-item {
   display: flex;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  padding: 16px;
 }
 
-.cart-img {
-  width: 120px;
-  height: 120px;
+.cart-item:hover {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.item-image img {
+  width: 100px;
+  height: 100px;
   object-fit: contain;
-  background-color: #f9f9f9;
-  border-radius: 6px;
 }
 
-.cart-info {
+.item-details {
+  margin-left: 20px;
   flex: 1;
 }
 
-.cart-title {
-  font-size: 20px;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.cart-category {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 6px;
-}
-
-.cart-category span {
+.item-title {
+  font-size: 1rem;
   font-weight: 500;
-  color: #444;
+  color: #212121;
+  margin-bottom: 4px;
 }
 
-.cart-rating {
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 8px;
-}
-
-.cart-price {
-  font-size: 18px;
-  color: #28a745;
-  font-weight: bold;
+.item-category {
+  color: #757575;
+  font-size: 0.85rem;
   margin-bottom: 10px;
 }
 
-.remove-btn {
-  background-color: #ff4d4d;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.remove-btn:hover {
-  background-color: #e04343;
-}
-
-.cart-summary {
-  margin-top: 30px;
-  text-align: right;
-}
-
-.total-amount {
-  font-size: 22px;
-  font-weight: bold;
+.price-section {
   margin-bottom: 10px;
-  color: #333;
 }
 
-.clear-btn {
-  background-color: #333;
-  color: white;
-  padding: 10px 20px;
+.item-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #212121;
+}
+
+/* ===== Quantity Controls ===== */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.qty-btn {
+  background: #e0e0e0;
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
+  padding: 4px 10px;
+  font-size: 1rem;
+  border-radius: 3px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-weight: bold;
 }
 
-.clear-btn:hover {
-  background-color: #000;
+.qty-btn:hover {
+  background: #d5d5d5;
 }
 
-@media (max-width: 600px) {
-  .cart-item-card {
-    flex-direction: column;
-    align-items: flex-start;
+.qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.qty-input {
+  width: 36px;
+  text-align: center;
+  margin: 0 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 3px 0;
+  font-size: 1rem;
+}
+
+/* ===== Remove Button ===== */
+.remove-item {
+  border: none;
+  background: none;
+  color: #d32f2f;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.remove-item:hover {
+  text-decoration: underline;
+}
+
+/* ===== Price Sidebar ===== */
+.price-sidebar {
+  position: sticky;
+  top: 30px;
+  align-self: flex-start;
+}
+
+.price-card {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  padding: 16px;
+}
+
+.price-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 14px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  color: #424242;
+  font-size: 0.95rem;
+}
+
+.price-row.total {
+  font-weight: 700;
+  font-size: 1rem;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.discount,
+.free {
+  color: #388e3c;
+  font-weight: 600;
+}
+
+/* ===== Place Order Button ===== */
+.place-order-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 3px;
+  background: #fb641b;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.place-order-btn:hover {
+  background: #d95d18;
+}
+
+/* ===== Responsive Flipkart Style ===== */
+@media (max-width: 768px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
   }
 
-  .cart-summary {
+  .cart-item {
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+  }
+
+  .item-details {
+    margin-left: 0;
+    margin-top: 12px;
+  }
+
+  .price-sidebar {
+    position: static;
+    margin-top: 20px;
   }
 }
