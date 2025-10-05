@@ -1,74 +1,89 @@
-import React, { useState } from "react";
 import axios from "axios";
-import "../style/LoginPage.css"
 import { useNavigate, Link } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { resetCart } from "../redux/CartSlice";
-
-// For example in logout handler:
-// dispatch(resetCart());
-
+import { useAuth } from "../context/AuthContext";  // 👈 import useAuth
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchCart } from "./CartSlice";
+import "../style/LoginPage.css";
 
 export const LoginPage = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "",
+  });
+
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const { setUser } = useAuth();  // 👈 context se setUser le liya
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post("http://localhost:8000/api/web/auth/login", {
-        email,
-        password,
-      });
-
-      // ✅ Token ko localStorage me save karna
-      localStorage.setItem("token", res.data.token);
-
-      // alert("Login Successful!");
-      navigate("/"); // dashboard/home par bhejo
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post("http://localhost:8000/api/web/auth/login", formData);
+
+    const { token, user } = res.data;
+
+    // ✅ Store auth data
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", user.role);
+
+    setUser(user); // ✅ Update context or state
+
+    // Dispatch fetchCart after login to update cart count
+    dispatch(fetchCart(token));
+
+    // ✅ Redirect based on role
+    if (user.role === "admin") {
+      console.log("role",user.role);
+      navigate("/admin"); 
+    } else {
+      navigate("/"); 
+    }
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  }
+};
+
+
   return (
-  <div className="login-container">
-    <form onSubmit={handleLogin} className="login-form">
+    <div className="login-container">
       <h2>Login</h2>
-
-      {error && <p className="error-message">{error}</p>}
-
-      <div className="input-group">
-        <label>Email</label>
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          placeholder="Enter Email"
+          value={formData.email}
+          onChange={handleChange}
           required
         />
-      </div>
-
-      <div className="input-group">
-        <label>Password</label>
         <input
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          placeholder="Enter Password"
+          value={formData.password}
+          onChange={handleChange}
           required
         />
-      </div>
+        <select name="role" value={formData.role} onChange={handleChange}>
+          <option value="user">Login as User</option>
+          <option value="admin">Login as Admin</option>
+        </select>
 
-      <button type="submit" className="login-button">
-        Login
-      </button>
+        <button type="submit">Login</button>
+      </form>
 
       <div className="login-links">
         <Link to="/forgot-password">Forgot Password?</Link>
-        <Link to="/signup">Create Account</Link>
+        <span> | </span>
+        <Link to="/signup">Don't have an account? Sign Up</Link>
       </div>
-    </form>
-  </div>
-);
-}
+    </div>
+  );
+};

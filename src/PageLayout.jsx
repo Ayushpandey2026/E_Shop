@@ -1,15 +1,15 @@
 import { Outlet } from "react-router-dom";
 import { Header } from "./pages/Header";
 import { Footer } from "./pages/Footer";
-import { ScrollToTop } from "./ScrollToTop"; // Ye import add karo
+import { ScrollToTop } from "./ScrollToTop";
 
 export const PageLayout = () => {
   return (
     <>
-      <ScrollToTop />  {/* Ye top pe daal */}
+      <ScrollToTop />
       <Header />
       <main>
-        <Outlet /> 
+        <Outlet />  {/* Yaha nested route render hoga */}
       </main>
       <Footer />
     </>

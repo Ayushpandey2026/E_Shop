@@ -7,10 +7,17 @@ export const MyProfile = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  const authHeaders = () => ({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   // UI state
   const [activeTab, setActiveTab] = useState("account"); // account, orders, wishlist, addresses, payments, security
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   // Data state
   const [user, setUser] = useState(null);
@@ -32,61 +39,93 @@ export const MyProfile = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  // useEffect(() => {
+  //   if (!token) {
+  //     navigate("/login");
+  //     return;
+  //   }
+  //   fetchAllProfileData();
+  //   // eslint-disable-next-line
+  // }, []);
 
+  // const authHeaders = () => ({
+  //   headers: { Authorization: `Bearer ${token}` },
+  // });
+
+  // const fetchAllProfileData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     // 1) fetch user profile
+  //     const userRes = await axios.get(
+  //       "http://localhost:8000/api/web/auth/profile",
+  //       authHeaders()
+  //     ); // adjust endpoint as per backend
+  //     setUser(userRes.data);
+  //     setEditForm({
+  //       name: userRes.data.name || "",
+  //       email: userRes.data.email || "",
+  //       phone: userRes.data.phone || "",
+  //     });
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-    fetchAllProfileData();
-    // eslint-disable-next-line
-  }, []);
+  if (!token) {
+    navigate("/login");
+    return;
+  }
 
-  const authHeaders = () => ({
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  const fetchAllProfileData = async () => {
+  const fetchProfileData = async () => {
     setLoading(true);
     try {
-      // 1) fetch user profile
-      const userRes = await axios.get(
-        "http://localhost:8000/api/web/auth/me",
-        authHeaders()
-      ); // adjust endpoint as per backend
-      setUser(userRes.data);
+      // 1) Fetch user profile
+      const res = await axios.get("http://localhost:8000/api/web/auth/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true, // optional depending on backend auth config
+      });
+      setUser(res.data);
       setEditForm({
-        name: userRes.data.name || "",
-        email: userRes.data.email || "",
-        phone: userRes.data.phone || "",
+        name: res.data.name || "",
+        email: res.data.email || "",
+        phone: res.data.phone || "",
       });
 
-      // 2) fetch user orders
-      const ordersRes = await axios.get(
-        "http://localhost:8000/api/web/order/my",
-        authHeaders()
-      );
-      setOrders(ordersRes.data || []);
+      // 2) Fetch orders
+      const ordersRes = await axios.get("http://localhost:8000/api/web/orders/my", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+      setOrders(ordersRes.data);
 
-      // 3) fetch wishlist
+      // 3) Fetch wishlist
       const wishRes = await axios.get(
         "http://localhost:8000/api/web/wishlist/my",
         authHeaders()
       );
       setWishlist(wishRes.data || []);
 
-      // 4) fetch addresses
+      // 4) Fetch addresses
       const addrRes = await axios.get(
         "http://localhost:8000/api/web/user/addresses",
-        authHeaders()
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
       );
       setAddresses(addrRes.data || []);
 
-      // 5) fetch payment methods (if any)
-      const payRes = await axios.get(
-        "http://localhost:8000/api/web/user/payments",
-        authHeaders()
-      ).catch(()=>({ data: [] }));
+      // 5) Fetch payment methods
+      const payRes = await axios
+        .get("http://localhost:8000/api/web/user/payments", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
+        .catch(() => ({ data: [] }));
       setPayments(payRes.data || []);
     } catch (err) {
       console.error("Profile fetch error:", err);
@@ -96,9 +135,26 @@ export const MyProfile = () => {
     }
   };
 
+  fetchProfileData();
+}, [token, navigate]);
+
+
   // ----------------- Profile update -----------------
   const handleEditChange = (e) =>
     setEditForm((s) => ({ ...s, [e.target.name]: e.target.value }));
+
+  const handleEditProfile = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditForm({
+      name: user?.name || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+    });
+    setIsEditing(false);
+  };
 
   const submitProfileUpdate = async (e) => {
     e.preventDefault();
@@ -172,7 +228,7 @@ export const MyProfile = () => {
     navigate(`/orders/${orderId}`);
   };
 
-  // ----------------- Wishlist quick remove -----------------
+  // ---------------- Wishlist quick remove ----------------
   const removeFromWishlist = async (productId) => {
     try {
       await axios.delete(`http://localhost:8000/api/web/wishlist/${productId}`, authHeaders());
@@ -186,7 +242,6 @@ export const MyProfile = () => {
   if (loading && !user) {
     return <div className="profile-root"><div className="spinner">Loading...</div></div>;
   }
-
   return (
     <div className="profile-root">
       <div className="profile-wrapper">
@@ -226,23 +281,33 @@ export const MyProfile = () => {
           {activeTab === "account" && (
             <div className="card">
               <h2>My Account</h2>
-              <form className="form-grid" onSubmit={submitProfileUpdate}>
-                <label>
-                  Name
-                  <input name="name" value={editForm.name} onChange={handleEditChange} />
-                </label>
-                <label>
-                  Email
-                  <input name="email" value={editForm.email} onChange={handleEditChange} />
-                </label>
-                <label>
-                  Phone
-                  <input name="phone" value={editForm.phone} onChange={handleEditChange} />
-                </label>
-                <div className="form-actions">
-                  <button type="submit" className="btn-primary">Save Changes</button>
+              {!isEditing ? (
+                <div className="profile-view">
+                  <p><strong>Name:</strong> {user?.name || "-"}</p>
+                  <p><strong>Email:</strong> {user?.email || "-"}</p>
+                  <p><strong>Phone:</strong> {user?.phone || "-"}</p>
+                  <button className="btn-primary" onClick={handleEditProfile}>Edit Profile</button>
                 </div>
-              </form>
+              ) : (
+                <form className="form-grid" onSubmit={(e) => { submitProfileUpdate(e); setIsEditing(false); }}>
+                  <label>
+                    Name
+                    <input name="name" value={editForm.name} onChange={handleEditChange} />
+                  </label>
+                  <label>
+                    Email
+                    <input name="email" value={editForm.email} onChange={handleEditChange} />
+                  </label>
+                  <label>
+                    Phone
+                    <input name="phone" value={editForm.phone} onChange={handleEditChange} />
+                  </label>
+                  <div className="form-actions">
+                    <button type="submit" className="btn-primary">Save Changes</button>
+                    <button type="button" className="btn-secondary" onClick={handleCancelEdit}>Cancel</button>
+                  </div>
+                </form>
+              )}
             </div>
           )}
 

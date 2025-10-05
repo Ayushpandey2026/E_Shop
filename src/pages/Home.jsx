@@ -6,18 +6,23 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
-import "../style/Home.css"; // 👈 Import CSS
+import API from "../api.js";
+import "../style/Home.css"; 
 
 export const Home = () => {
   const dispatch = useDispatch();
   const [productData, setProductData] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/web/product")
-      .then((response) => setProductData(response.data))
-      .catch((error) => console.error("Error fetching products:", error));
-  }, []);
+ useEffect(() => {
+  API
+    .get("/product")
+    .then((response) => {
+      console.log("API Response:", response.data); // 🔍
+      setProductData(response.data);
+    })
+    .catch((error) => console.error("Error fetching products:", error));
+}, []);
+
 
   const settings = {
     dots: false,
@@ -74,3 +79,5 @@ export const Home = () => {
     </div>
   );
 };
+
+

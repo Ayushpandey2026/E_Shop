@@ -1,0 +1,70 @@
+.manage-users {
+  padding: 20px;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+
+.manage-users h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.user-table th,
+.user-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.user-table th {
+  background: #f1f3f6;
+  font-size: 14px;
+  color: #444;
+  text-transform: uppercase;
+}
+
+.user-table tr:hover {
+  background: #f9f9f9;
+}
+
+.role-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.role-badge.admin {
+  background: #2874f0;
+  color: white;
+}
+
+.role-badge.seller {
+  background: #faad14;
+  color: white;
+}
+
+.role-badge.user {
+  background: #52c41a;
+  color: white;
+}
+
+.block-btn {
+  padding: 6px 12px;
+  background: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

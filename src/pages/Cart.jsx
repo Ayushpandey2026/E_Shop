@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import API from "../api/postApi";
 import { useNavigate } from "react-router-dom";
 import "../style/cart.css";

@@ -1,7 +1,11 @@
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { addToCart } from "../redux/cartSlice"; 
+import { addToCart } from "../redux/CartSlice";
+import axios from "axios";
+import ReviewsSection from "../components/ReviewsSection";
+import { useAuth } from "../context/AuthContext";
 import "../style/productDetail.css";
 
 export const ProductDetails = () => {
@@ -14,27 +18,27 @@ export const ProductDetails = () => {
   const dispatch = useDispatch();
   const cartState = useSelector((state) => state.cart);
   const { loading, error } = cartState;
+  const { user } = useAuth();
 
-  // Fetch product only if not coming from state
+  // Fetch product and similar products
   useEffect(() => {
     const fetchProduct = async () => {
       if (!product) {
         try {
           const res = await fetch(`http://localhost:8000/api/products/${id}`);
           const data = await res.json();
-          setProduct(data);
+          setProduct(data.data);
 
-          // Fetch similar products
           const res2 = await fetch(
-            `http://localhost:8000/api/products?category=${data.category}`
+            `http://localhost:8000/api/products?category=${data.data.category}`
           );
           const data2 = await res2.json();
-          setSimilarProducts(data2.filter((p) => p._id !== data._id));
+          setSimilarProducts(data2.filter((p) => p._id !== data.data._id));
         } catch (err) {
           console.error("Error fetching product:", err);
         }
       } else {
-        // If product already in state, still fetch similar products
+        // Product already in state, fetch similar
         fetch(`http://localhost:8000/api/products?category=${product.category}`)
           .then((res) => res.json())
           .then((data2) =>
@@ -46,17 +50,76 @@ export const ProductDetails = () => {
   }, [id, product]);
 
   const handleAddToCart = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!user) {
       alert("Please login first!");
       return navigate("/login");
     }
-    dispatch(addToCart({ productId: product._id, quantity: 1, token }));
+    dispatch(addToCart({ productId: product._id, quantity: 1, token: localStorage.getItem("token") }));
   };
 
-  const handleBuyNow = () => {
-    alert(`Proceeding to buy: ${product.title}`);
-    // navigate("/checkout", { state: { product } });
+  const handleBuyNow = async () => {
+    if (!user) {
+      alert("Please login first!");
+      return navigate("/login");
+    }
+
+    const token = localStorage.getItem("token");
+    const amount = product.price * 100; // Razorpay uses paise
+
+    try {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+
+      script.onload = async () => {
+        const { data: order } = await axios.post(
+          "http://localhost:8000/api/payment/order",
+          { amount },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const options = {
+          key: "rzp_test_xxxxxxxx", // TODO: Replace with your Razorpay test/live key
+          amount: order.amount,
+          currency: order.currency,
+          name: "MyShop",
+          description: `Purchase: ${product.title}`,
+          order_id: order.id,
+          handler: async function (response) {
+            try {
+              await axios.post(
+                "http://localhost:8000/api/payment/verify",
+                {
+                  ...response,
+                  cart: [{ productId: product._id, qty: 1 }],
+                  userId: user.id,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+
+              navigate("/order-success");
+            } catch (err) {
+              console.error("Payment verification failed:", err);
+              alert("Payment verification failed.");
+            }
+          },
+          prefill: {
+            name: user.name || "", // Optional
+            email: user.email || "", // Optional
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      };
+    } catch (error) {
+      console.error("Payment initiation failed:", error);
+      alert("Payment initiation failed.");
+    }
   };
 
   if (!product) return <p>Loading product details...</p>;
@@ -85,6 +148,9 @@ export const ProductDetails = () => {
 
         {error && <p style={{ color: "red" }}>{error}</p>}
       </div>
+
+      {/* Reviews Section */}
+      <ReviewsSection productId={product._id} />
 
       {/* Similar Products */}
       <div className="similar-products">

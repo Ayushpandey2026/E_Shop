@@ -44,7 +44,7 @@ export const Header = () => {
               </div>
             </div>
             
-          <NavLink to="/" activeclassname="active">
+          {/* <NavLink to="/" activeclassname="active">
             Home
           </NavLink>
           <NavLink to="/product" activeclassname="active">
@@ -55,9 +55,37 @@ export const Header = () => {
           </NavLink>
           <NavLink to="/contact" activeclassname="active">
             Contact
-          </NavLink>
+          </NavLink> */}
 
-        
+          <NavLink 
+  to="/" 
+  className={({ isActive }) => (isActive ? "active" : "")}
+>
+  Home
+</NavLink>
+
+<NavLink 
+  to="/product" 
+  className={({ isActive }) => (isActive ? "active" : "")}
+>
+  Product
+</NavLink>
+
+<NavLink 
+  to="/services" 
+  className={({ isActive }) => (isActive ? "active" : "")}
+>
+  Services
+</NavLink>
+
+<NavLink 
+  to="/contact" 
+  className={({ isActive }) => (isActive ? "active" : "")}
+>
+  Contact
+</NavLink>
+
+
 
           {/* Cart */}
           <NavLink to="/cart" className="cart-link" activeclassname="active">
