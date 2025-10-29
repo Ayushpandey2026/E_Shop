@@ -16,7 +16,7 @@ export const Orders = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get("http://localhost:8000/api/web/order/my", {
+        const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/web/order/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000/api/web", // ✅ backend base
+  baseURL: "https://e-shop-backend-iqb1.onrender.com/api/web", // ✅ backend base
   withCredentials: true,
 });
 

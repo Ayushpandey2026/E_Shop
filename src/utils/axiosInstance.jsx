@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000/api/web",
+  baseURL: "https://e-shop-backend-iqb1.onrender.com/api/web",
 });
 
 // Request interceptor for attaching token

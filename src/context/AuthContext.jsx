@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
   const login = async (email, password, role) => {
-    const res = await fetch("http://localhost:8000/api/auth/login", {
+    const res = await fetch("https://e-shop-backend-iqb1.onrender.com/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, role })
