@@ -8,7 +8,7 @@ const ManageProducts = () => {
   const token = localStorage.getItem("token");
 
   const fetchProducts = async () => {
-    const res = await fetch("http://localhost:8000/api/admin/products", {
+    const res = await fetch("https://e-shop-backend-iqb1.onrender.com/api/admin/products", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -20,7 +20,7 @@ const ManageProducts = () => {
   }, []);
 
   const handleSave = async () => {
-    await fetch(`http://localhost:8000/api/products/${editingProduct._id}`, {
+    await fetch(`https://e-shop-backend-iqb1.onrender.com/api/products/${editingProduct._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const ManageProducts = () => {
                 <button
                   className="delete-btn"
                   onClick={async () => {
-                    await fetch(`http://localhost:8000/api/products/${p._id}`, {
+                    await fetch(`https://e-shop-backend-iqb1.onrender.com/api/products/${p._id}`, {
                       method: "DELETE",
                       headers: { Authorization: `Bearer ${token}` },
                     });

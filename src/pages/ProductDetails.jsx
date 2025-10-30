@@ -25,12 +25,12 @@ export const ProductDetails = () => {
     const fetchProduct = async () => {
       if (!product) {
         try {
-          const res = await fetch(`http://localhost:8000/api/products/${id}`);
+          const res = await fetch(`https://e-shop-backend-iqb1.onrender.com/api/products/${id}`);
           const data = await res.json();
           setProduct(data.data);
 
           const res2 = await fetch(
-            `http://localhost:8000/api/products?category=${data.data.category}`
+            `https://e-shop-backend-iqb1.onrender.com/api/products?category=${data.data.category}`
           );
           const data2 = await res2.json();
           setSimilarProducts(data2.filter((p) => p._id !== data.data._id));
@@ -39,7 +39,7 @@ export const ProductDetails = () => {
         }
       } else {
         // Product already in state, fetch similar
-        fetch(`http://localhost:8000/api/products?category=${product.category}`)
+        fetch(`https://e-shop-backend-iqb1.onrender.com/api/products?category=${product.category}`)
           .then((res) => res.json())
           .then((data2) =>
             setSimilarProducts(data2.filter((p) => p._id !== product._id))
@@ -74,7 +74,7 @@ export const ProductDetails = () => {
 
       script.onload = async () => {
         const { data: order } = await axios.post(
-          "http://localhost:8000/api/payment/order",
+          "https://e-shop-backend-iqb1.onrender.com/api/payment/order",
           { amount },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -89,7 +89,7 @@ export const ProductDetails = () => {
           handler: async function (response) {
             try {
               await axios.post(
-                "http://localhost:8000/api/payment/verify",
+                "https://e-shop-backend-iqb1.onrender.com/api/payment/verify",
                 {
                   ...response,
                   cart: [{ productId: product._id, qty: 1 }],

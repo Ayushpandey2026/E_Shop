@@ -5,7 +5,7 @@ const token = localStorage.getItem("token");
 
 // Fetch cart
 export const fetchCart = createAsyncThunk("cart/fetchCart", async () => {
-  const res = await axios.get("http://localhost:8000/api/cart", {
+  const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/cart", {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });
   return res.data;
@@ -16,7 +16,7 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, quantity }) => {
     const res = await axios.post(
-      "http://localhost:8000/api/cart",
+      "https://e-shop-backend-iqb1.onrender.com/api/cart",
       { productId, quantity },
       {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

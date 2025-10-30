@@ -84,7 +84,7 @@ export const Cart = () => {
     console.log("Placing order...");
 
     const response = await axios.post(
-      "http://localhost:8000/api/web/order",
+      "https://e-shop-backend-iqb1.onrender.com/api/web/order",
       {
         items: cartItems.map(item => ({
           productId: item.productId._id,

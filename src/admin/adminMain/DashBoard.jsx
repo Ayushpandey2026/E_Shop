@@ -93,11 +93,11 @@ export default function Dashboard() {
   const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#8dd1e1"];
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/admin/analytics/stats").then(res => setStats(res.data));
-    axios.get("http://localhost:8000/api/admin/analytics/revenue-by-month").then(res => setRevenueData(res.data));
-    axios.get("http://localhost:8000/api/admin/analytics/top-products").then(res => setTopProducts(res.data));
-    axios.get("http://localhost:8000/api/admin/analytics/growth").then(res => setGrowthStats(res.data));
-    axios.get("http://localhost:8000/api/admin/analytics/order-status").then(res => setOrderStatusData(res.data));
+    axios.get("https://e-shop-backend-iqb1.onrender.com/api/admin/analytics/stats").then(res => setStats(res.data));
+    axios.get("https://e-shop-backend-iqb1.onrender.com/api/admin/analytics/revenue-by-month").then(res => setRevenueData(res.data));
+    axios.get("https://e-shop-backend-iqb1.onrender.com/api/admin/analytics/top-products").then(res => setTopProducts(res.data));
+    axios.get("https://e-shop-backend-iqb1.onrender.com/api/admin/analytics/growth").then(res => setGrowthStats(res.data));
+    axios.get("https://e-shop-backend-iqb1.onrender.com/api/admin/analytics/order-status").then(res => setOrderStatusData(res.data));
   }, []);
 
   return (

@@ -11,7 +11,7 @@ const ManageUsers = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:8000/api/admin/users", {
+      const res = await fetch("https://e-shop-backend-iqb1.onrender.com/api/admin/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

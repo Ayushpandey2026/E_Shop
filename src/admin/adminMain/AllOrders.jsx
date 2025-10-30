@@ -13,7 +13,7 @@ const AllOrders = () => {
       return;
     }
       
-      const res = await axios.get("http://localhost:8000/api/admin/orders", {
+      const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/admin/orders", {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("data h", res.data);
@@ -27,7 +27,7 @@ const AllOrders = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8000/api/admin/orders/${orderId}/status`,
+        `https://e-shop-backend-iqb1.onrender.com/api/admin/orders/${orderId}/status`,
         { status: newStatus },
         {
           headers: {

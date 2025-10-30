@@ -1,7 +1,7 @@
 // Test script to check if the cart API endpoint is working
-const axios = require('axios');
+import axios from 'axios';
 
-const API_BASE = "http://localhost:8000/api/cart";
+const API_BASE = "https://e-shop-backend-iqb1.onrender.com/api/cart";
 const TEST_TOKEN = "your_test_token_here"; // Replace with a valid token
 
 async function testCartAPI() {

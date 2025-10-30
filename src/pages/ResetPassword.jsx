@@ -11,7 +11,7 @@ export const ResetPassword = () => {
   const handleReset = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(`http://localhost:8000/api/web/auth/reset-password/${token}`, {
+      const res = await axios.put(`https://e-shop-backend-iqb1.onrender.com/api/web/auth/reset-password/${token}`, {
         password: newPassword,
       });
       alert(res.data.message);

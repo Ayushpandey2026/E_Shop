@@ -23,7 +23,7 @@ export const Product = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/web/product", {
+      const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/web/product", {
         params: { category, minPrice, maxPrice, sort },
       });
       if (res.data && Array.isArray(res.data)) {

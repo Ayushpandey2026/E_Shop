@@ -29,7 +29,7 @@ export const addToCart = createAsyncThunk(
   async ({ productId, quantity = 1 }, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/web/cart/add",
+        "https://e-shop-backend-iqb1.onrender.com/api/web/cart/add",
         { productId, quantity },
         {
           headers: {
@@ -51,7 +51,7 @@ export const removeFromCart = createAsyncThunk(
   async ({productId,quantity}, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/web/cart/remove",{productId,quantity},
+        "https://e-shop-backend-iqb1.onrender.com/api/web/cart/remove",{productId,quantity},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

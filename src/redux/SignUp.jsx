@@ -12,7 +12,7 @@ export const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/api/web/auth/signup", {
+      const response = await axios.post("https://e-shop-backend-iqb1.onrender.com/api/web/auth/signup", {
         name,
         email,
         password,

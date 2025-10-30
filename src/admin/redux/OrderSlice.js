@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Fetch orders
 export const fetchOrders = createAsyncThunk("orders/fetchOrders", async () => {
-  const res = await axios.get("http://localhost:8000/api/orders", {
+  const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/orders", {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });
   return res.data;
