@@ -23,8 +23,8 @@ export const LoginPage = () => {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
-  try {
-    const res = await axios.post("https://e-shop-backend-iqb1.onrender.com/api/web/auth/login", formData);
+    try {
+    const res = await axios.post("/auth/login", formData);
 
     const { token, user } = res.data;
 

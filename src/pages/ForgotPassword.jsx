@@ -8,7 +8,7 @@ export const ForgotPassword = () => {
   const handleForgot = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://e-shop-backend-iqb1.onrender.com/api/web/auth/forgot-password", { email });
+      const res = await axios.post("/auth/forgot-password", { email });
       alert(res.data.message);
     } catch (err) {
       alert(err.response?.data?.message || "Something went wrong");

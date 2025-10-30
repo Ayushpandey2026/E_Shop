@@ -76,7 +76,7 @@ export const MyProfile = () => {
     setLoading(true);
     try {
       // 1) Fetch user profile
-      const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/web/auth/profile", {
+      const res = await axios.get("/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,7 +90,7 @@ export const MyProfile = () => {
       });
 
       // 2) Fetch orders
-      const ordersRes = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/web/orders/my", {
+      const ordersRes = await axios.get("/orders/my", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -100,14 +100,14 @@ export const MyProfile = () => {
 
       // 3) Fetch wishlist
       const wishRes = await axios.get(
-        "https://e-shop-backend-iqb1.onrender.com/api/web/wishlist/my",
+        "/wishlist/my",
         authHeaders()
       );
       setWishlist(wishRes.data || []);
 
       // 4) Fetch addresses
       const addrRes = await axios.get(
-        "https://e-shop-backend-iqb1.onrender.com/api/web/user/addresses",
+        "/user/addresses",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -119,7 +119,7 @@ export const MyProfile = () => {
 
       // 5) Fetch payment methods
       const payRes = await axios
-        .get("https://e-shop-backend-iqb1.onrender.com/api/web/user/payments", {
+        .get("/user/payments", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -162,7 +162,7 @@ export const MyProfile = () => {
     setError("");
     try {
       const res = await axios.put(
-        "https://e-shop-backend-iqb1.onrender.com/api/web/auth/update",
+        "/auth/update",
         editForm,
         authHeaders()
       );
@@ -189,7 +189,7 @@ export const MyProfile = () => {
     }
     try {
       await axios.post(
-        "https://e-shop-backend-iqb1.onrender.com/api/web/auth/change-password",
+        "/auth/change-password",
         {
           currentPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword,
@@ -215,7 +215,7 @@ export const MyProfile = () => {
   const removeAddress = async (id) => {
     if (!window.confirm("Remove this address?")) return;
     try {
-      await axios.delete(`https://e-shop-backend-iqb1.onrender.com/api/web/user/address/${id}`, authHeaders());
+      await axios.delete(`/user/address/${id}`, authHeaders());
       setAddresses((prev) => prev.filter((a) => a._id !== id));
     } catch (err) {
       console.error(err);
@@ -231,7 +231,7 @@ export const MyProfile = () => {
   // ---------------- Wishlist quick remove ----------------
   const removeFromWishlist = async (productId) => {
     try {
-      await axios.delete(`https://e-shop-backend-iqb1.onrender.com/api/web/wishlist/${productId}`, authHeaders());
+      await axios.delete(`/wishlist/${productId}`, authHeaders());
       setWishlist((prev) => prev.filter((w) => w._id !== productId));
     } catch (err) {
       console.error(err);
