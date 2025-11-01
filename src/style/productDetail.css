@@ -3,7 +3,7 @@
   display: flex;
   gap: 40px;
   padding: 30px 50px;
-  background-color: #f1f3f6;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   font-family: 'Roboto', sans-serif;
   flex-wrap: wrap;
 }
@@ -77,22 +77,28 @@
 
 /* Add to Cart button */
 .buttons button:first-child {
-  background-color: #ff9f00;
+  background: linear-gradient(135deg, #ff9f00, #ffb74d);
   color: white;
+  box-shadow: 0 4px 15px rgba(255, 159, 0, 0.3);
 }
 
 .buttons button:first-child:hover {
-  background-color: #fb8c00;
+  background: linear-gradient(135deg, #fb8c00, #ff9800);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 159, 0, 0.4);
 }
 
 /* Buy Now button */
 .buy-now {
-  background-color: #fb641b;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
   color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
 }
 
 .buy-now:hover {
-  background-color: #e65100;
+  background: linear-gradient(135deg, #e55a2b, #e8850f);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
 }
 
 /* ===== Similar Products Section ===== */
@@ -126,7 +132,9 @@
 }
 
 .similar-product-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .similar-product-card img {

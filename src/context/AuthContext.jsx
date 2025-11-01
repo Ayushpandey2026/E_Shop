@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import API from "../api.js";
 
 const AuthContext = createContext();
 
@@ -7,13 +8,11 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
   const login = async (email, password, role) => {
-    const res = await fetch("https://e-shop-backend-iqb1.onrender.com/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role })
+    const res = await API.post("/auth/login", {
+      email, password, role
     });
 
-    const data = await res.json();
+    const data = res.data;
     if (data.token) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));

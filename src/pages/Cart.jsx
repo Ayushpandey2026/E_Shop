@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import API from "../api/postApi";
+import API_MAIN from "../api.js";
 import { useNavigate } from "react-router-dom";
 import "../style/cart.css";
 export const Cart = () => {
@@ -83,8 +84,8 @@ export const Cart = () => {
   try {
     console.log("Placing order...");
 
-    const response = await axios.post(
-      "https://e-shop-backend-iqb1.onrender.com/api/web/order",
+    const response = await API_MAIN.post(
+      "/order",
       {
         items: cartItems.map(item => ({
           productId: item.productId._id,

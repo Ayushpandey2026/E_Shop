@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { addToCart } from "../redux/CartSlice";
 import axios from "axios";
+import API from "../api.js";
 import ReviewsSection from "../components/ReviewsSection";
 import { useAuth } from "../context/AuthContext";
 import "../style/productDetail.css";
@@ -25,22 +26,22 @@ export const ProductDetails = () => {
     const fetchProduct = async () => {
       if (!product) {
         try {
-          const res = await fetch(`https://e-shop-backend-iqb1.onrender.com/api/products/${id}`);
-          const data = await res.json();
-          setProduct(data.data);
+          const res = await API.get(`/product/${id}`);
+          const data = res.data;
+          setProduct(data);
 
-          const res2 = await fetch(
-            `https://e-shop-backend-iqb1.onrender.com/api/products?category=${data.data.category}`
+          const res2 = await API.get(
+            `/product?category=${data.category}`
           );
-          const data2 = await res2.json();
-          setSimilarProducts(data2.filter((p) => p._id !== data.data._id));
+          const data2 = res2.data;
+          setSimilarProducts(data2.filter((p) => p._id !== data._id));
         } catch (err) {
           console.error("Error fetching product:", err);
         }
       } else {
         // Product already in state, fetch similar
-        fetch(`https://e-shop-backend-iqb1.onrender.com/api/products?category=${product.category}`)
-          .then((res) => res.json())
+        API.get(`/product?category=${product.category}`)
+          .then((res) => res.data)
           .then((data2) =>
             setSimilarProducts(data2.filter((p) => p._id !== product._id))
           );
@@ -74,7 +75,7 @@ export const ProductDetails = () => {
 
       script.onload = async () => {
         const { data: order } = await axios.post(
-          "https://e-shop-backend-iqb1.onrender.com/api/payment/order",
+          "/payment/order",
           { amount },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -89,7 +90,7 @@ export const ProductDetails = () => {
           handler: async function (response) {
             try {
               await axios.post(
-                "https://e-shop-backend-iqb1.onrender.com/api/payment/verify",
+                "/payment/verify",
                 {
                   ...response,
                   cart: [{ productId: product._id, qty: 1 }],

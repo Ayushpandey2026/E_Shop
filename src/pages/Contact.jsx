@@ -9,7 +9,7 @@ export const Contact = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post("https://e-shop-backend-iqb1.onrender.com/api/web/query/insert", {
+        axios.post("/query/insert", {
             name,
             email,
             subject,

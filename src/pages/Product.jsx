@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API from "../api.js";
 import { addToCart, fetchCart } from "../redux/CartSlice";
 import "../style/product.css";
 
@@ -16,6 +17,7 @@ export const Product = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState("");
+  const [filtersVisible, setFiltersVisible] = useState(true);
 
   useEffect(() => {
     fetchProducts();
@@ -23,7 +25,7 @@ export const Product = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/web/product", {
+      const res = await API.get("/product", {
         params: { category, minPrice, maxPrice, sort },
       });
       if (res.data && Array.isArray(res.data)) {
@@ -62,15 +64,27 @@ export const Product = () => {
 
   return (
     <div className="product-page">
-      <aside className="filters">
+      {!filtersVisible && (
+        <div className="show-filters-button">
+          <button onClick={() => setFiltersVisible(true)}>
+            Show Filters
+          </button>
+        </div>
+      )}
+      <aside className={`filters ${filtersVisible ? '' : 'hidden'}`}>
         <div className="filter-header">
           <h2>Filters</h2>
-          <button onClick={() => {
-            setCategory("");
-            setMinPrice("");
-            setMaxPrice("");
-            setSort("");
-          }}>Clear All</button>
+          <div className="filter-actions">
+            <button onClick={() => setFiltersVisible(!filtersVisible)}>
+              {filtersVisible ? 'Hide' : 'Show'} Filters
+            </button>
+            <button onClick={() => {
+              setCategory("");
+              setMinPrice("");
+              setMaxPrice("");
+              setSort("");
+            }}>Clear All</button>
+          </div>
         </div>
 
         <div className="filter-group">

@@ -127,6 +127,14 @@
   flex-direction: column;
   gap: 8px;
   font-size: 0.95rem;
+  position: relative;
+}
+
+.form-grid label svg {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
 }
 
 .form-grid input, .form-grid select, .form-grid textarea {
@@ -135,6 +143,27 @@
   border: 1px solid #e6eef9;
   outline: none;
   font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-grid input.error {
+  border-color: #ef4444;
+}
+
+.form-grid input[type="file"] {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 4px;
 }
 
 .form-actions {

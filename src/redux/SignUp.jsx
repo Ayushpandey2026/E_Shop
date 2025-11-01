@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance.jsx";
 import "../style/Signup.css";
 
 export const SignUp = () => {
@@ -12,7 +12,7 @@ export const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/auth/signup", {
+      const response = await axiosInstance.post("/auth/signup", {
         name,
         email,
         password,

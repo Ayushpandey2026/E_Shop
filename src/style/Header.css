@@ -1,11 +1,13 @@
 /* Navbar Base */
 .navbar {
-  background: #2874f0; /* Flipkart blue */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 12px 24px;
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
 .container {
@@ -35,6 +37,7 @@
 
 .nav-links a:hover {
   color: #ffe11b;
+  transform: translateY(-1px);
 }
 
 /* Account Dropdown */
@@ -83,12 +86,13 @@
   cursor: pointer;
   text-decoration: none;
   width: 100%;
+  transition: background 0.2s ease;
 }
 
-/* .dropdown-menu a:hover,
+.dropdown-menu a:hover,
 .dropdown-menu button:hover {
-  background: #f1f1f1;
-} */
+  background: #f8f9fa;
+}
 
 /* Show dropdown on hover */
 .account-dropdown:hover .dropdown-menu {
@@ -115,10 +119,24 @@
   position: absolute;
   top: -6px;
   right: -10px;
-  background: #ff6161;
+  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
   color: white;
   font-size: 12px;
   font-weight: bold;
   padding: 2px 6px;
   border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

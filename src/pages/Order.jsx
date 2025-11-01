@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import API from "../api.js";
 import "../style/Order.css";
 
 export const Orders = () => {
@@ -16,7 +17,7 @@ export const Orders = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get("https://e-shop-backend-iqb1.onrender.com/api/web/order/my", {
+        const res = await API.get("/orders/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

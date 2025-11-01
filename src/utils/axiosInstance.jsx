@@ -2,7 +2,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/web",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://e-shop-backend-iqb1.onrender.com/api/web",
+  withCredentials: true,
 });
 
 // Request interceptor for attaching token

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import API from "../api.js";
 import { useNavigate } from "react-router-dom";
 import "../style/MyProfile.css";
 
@@ -28,6 +29,16 @@ export const MyProfile = () => {
 
   // Edit profile form
   const [editForm, setEditForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+
+  // Profile picture upload
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  // Form validation errors
+  const [formErrors, setFormErrors] = useState({
     name: "",
     email: "",
     phone: "",
@@ -76,7 +87,7 @@ export const MyProfile = () => {
     setLoading(true);
     try {
       // 1) Fetch user profile
-      const res = await axios.get("/auth/profile", {
+      const res = await API.get("/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,7 +101,7 @@ export const MyProfile = () => {
       });
 
       // 2) Fetch orders
-      const ordersRes = await axios.get("/orders/my", {
+      const ordersRes = await API.get("/orders/my", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -99,14 +110,14 @@ export const MyProfile = () => {
       setOrders(ordersRes.data);
 
       // 3) Fetch wishlist
-      const wishRes = await axios.get(
+      const wishRes = await API.get(
         "/wishlist/my",
         authHeaders()
       );
       setWishlist(wishRes.data || []);
 
       // 4) Fetch addresses
-      const addrRes = await axios.get(
+      const addrRes = await API.get(
         "/user/addresses",
         {
           headers: {
@@ -118,7 +129,7 @@ export const MyProfile = () => {
       setAddresses(addrRes.data || []);
 
       // 5) Fetch payment methods
-      const payRes = await axios
+      const payRes = await API
         .get("/user/payments", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -140,8 +151,29 @@ export const MyProfile = () => {
 
 
   // ----------------- Profile update -----------------
-  const handleEditChange = (e) =>
-    setEditForm((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((s) => ({ ...s, [name]: value }));
+    // Clear error on change
+    if (formErrors[name]) {
+      setFormErrors((s) => ({ ...s, [name]: "" }));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!editForm.name.trim()) errors.name = "Name is required";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(editForm.email)) errors.email = "Invalid email format";
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(editForm.phone)) errors.phone = "Phone must be 10 digits";
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleEditProfile = () => {
     setIsEditing(true);
@@ -153,21 +185,35 @@ export const MyProfile = () => {
       email: user?.email || "",
       phone: user?.phone || "",
     });
+    setSelectedFile(null);
+    setFormErrors({ name: "", email: "", phone: "" });
     setIsEditing(false);
   };
 
   const submitProfileUpdate = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     setLoading(true);
     setError("");
     try {
-      const res = await axios.put(
-        "/auth/update",
-        editForm,
-        authHeaders()
-      );
+      const formData = new FormData();
+      formData.append("name", editForm.name);
+      formData.append("email", editForm.email);
+      formData.append("phone", editForm.phone);
+      if (selectedFile) {
+        formData.append("avatar", selectedFile);
+      }
+
+      const res = await API.put("/auth/update", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setUser(res.data);
+      setSelectedFile(null);
       alert("Profile updated successfully");
+      setIsEditing(false);
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || "Failed to update profile");
@@ -188,7 +234,7 @@ export const MyProfile = () => {
       return;
     }
     try {
-      await axios.post(
+      await API.post(
         "/auth/change-password",
         {
           currentPassword: passwordForm.currentPassword,
@@ -215,7 +261,7 @@ export const MyProfile = () => {
   const removeAddress = async (id) => {
     if (!window.confirm("Remove this address?")) return;
     try {
-      await axios.delete(`/user/address/${id}`, authHeaders());
+      await API.delete(`/user/address/${id}`, authHeaders());
       setAddresses((prev) => prev.filter((a) => a._id !== id));
     } catch (err) {
       console.error(err);
@@ -231,7 +277,7 @@ export const MyProfile = () => {
   // ---------------- Wishlist quick remove ----------------
   const removeFromWishlist = async (productId) => {
     try {
-      await axios.delete(`/wishlist/${productId}`, authHeaders());
+      await API.delete(`/wishlist/${productId}`, authHeaders());
       setWishlist((prev) => prev.filter((w) => w._id !== productId));
     } catch (err) {
       console.error(err);
@@ -291,16 +337,36 @@ export const MyProfile = () => {
               ) : (
                 <form className="form-grid" onSubmit={(e) => { submitProfileUpdate(e); setIsEditing(false); }}>
                   <label>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                     Name
-                    <input name="name" value={editForm.name} onChange={handleEditChange} />
+                    <input name="name" value={editForm.name} onChange={handleEditChange} className={formErrors.name ? "error" : ""} />
+                    {formErrors.name && <span className="error-text">{formErrors.name}</span>}
                   </label>
                   <label>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 8L10.89 4.26C11.2187 4.10222 11.5817 4.10222 11.91 4.26L19.8 8M21 8V16C21 16.5304 20.7893 17.0391 20.4142 17.4142C20.0391 17.7893 19.5304 18 19 18H5C4.46957 18 3.96086 17.7893 3.58579 17.4142C3.21071 17.0391 3 16.5304 3 16V8M21 8L19.8 8M3 8L4.2 8" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                     Email
-                    <input name="email" value={editForm.email} onChange={handleEditChange} />
+                    <input name="email" value={editForm.email} onChange={handleEditChange} className={formErrors.email ? "error" : ""} />
+                    {formErrors.email && <span className="error-text">{formErrors.email}</span>}
                   </label>
                   <label>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5Z" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M3 9H21M9 3V21" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                     Phone
-                    <input name="phone" value={editForm.phone} onChange={handleEditChange} />
+                    <input name="phone" value={editForm.phone} onChange={handleEditChange} className={formErrors.phone ? "error" : ""} />
+                    {formErrors.phone && <span className="error-text">{formErrors.phone}</span>}
+                  </label>
+                  <label>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 16L8.586 11.414C9.36768 10.6323 10.6323 10.6323 11.414 11.414L16 16M14 14L15.586 12.414C16.3677 11.6323 17.6323 11.6323 18.414 12.414L20 14M14 8H14.01M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Profile Picture
+                    <input type="file" accept="image/*" onChange={handleFileChange} />
                   </label>
                   <div className="form-actions">
                     <button type="submit" className="btn-primary">Save Changes</button>

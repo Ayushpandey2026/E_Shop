@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";  // 👈 import useAuth
 import { useState } from "react";
@@ -24,7 +24,7 @@ export const LoginPage = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
     try {
-    const res = await axios.post("/auth/login", formData);
+    const res = await axiosInstance.post("/auth/login", formData);
 
     const { token, user } = res.data;
 

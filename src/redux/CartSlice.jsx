@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../api/postApi";  
+import api from "../api/postApi";
 import axios from "axios"; // agar tum direct axios use karna chahte ho
+import API from "../api.js";
 import { useSelector } from "react-redux";
 
 // Fetch Cart
@@ -28,8 +29,8 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, quantity = 1 }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        "https://e-shop-backend-iqb1.onrender.com/api/web/cart/add",
+      const res = await API.post(
+        "/cart/add",
         { productId, quantity },
         {
           headers: {
@@ -50,8 +51,8 @@ export const removeFromCart = createAsyncThunk(
   "cart/removeFromCart",
   async ({productId,quantity}, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        "https://e-shop-backend-iqb1.onrender.com/api/web/cart/remove",{productId,quantity},
+      const res = await API.post(
+        "/cart/remove",{productId,quantity},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

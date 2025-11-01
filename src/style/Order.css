@@ -1,7 +1,7 @@
 /* Orders Page Container */
 .orders-page {
   padding: 2rem;
-  background: #f1f3f6;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
 }
@@ -54,6 +54,8 @@
 
 .order-card:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  transition: all 0.3s ease;
 }
 
 /* Each item inside an order */
@@ -159,5 +161,7 @@
 }
 
 .scroll-top-btn:hover {
-  background: #1a5fd4;
+  background: linear-gradient(135deg, #1a5fd4, #0d47a1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 116, 240, 0.4);
 }
