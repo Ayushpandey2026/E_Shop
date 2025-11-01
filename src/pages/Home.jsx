@@ -304,7 +304,7 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
@@ -368,7 +368,7 @@ export const Home = () => {
             </div>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 };

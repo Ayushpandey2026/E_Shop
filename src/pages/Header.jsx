@@ -44,18 +44,6 @@ export const Header = () => {
               </div>
             </div>
             
-          {/* <NavLink to="/" activeclassname="active">
-            Home
-          </NavLink>
-          <NavLink to="/product" activeclassname="active">
-            Product
-          </NavLink>
-          <NavLink to="/services" activeclassname="active">
-            Services
-          </NavLink>
-          <NavLink to="/contact" activeclassname="active">
-            Contact
-          </NavLink> */}
 
           <NavLink 
   to="/" 

@@ -1,4 +1,5 @@
 import "../style/Footer.css"; // Make sure this path is correct
+import { FaSearch, FaShoppingCart, FaHeart, FaStar, FaClock, FaFire, FaTag, FaTruck, FaShieldAlt, FaHeadset, FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 export const Footer = () => {
   return (
@@ -40,12 +41,14 @@ export const Footer = () => {
           <h4>Contact Us</h4>
           <p>Email: support@myshop.com</p>
           <p>Phone: +91 9876543210</p>
-          <div className="social-icons">
-            <a href="#"><i className="fab fa-facebook-f"></i></a>
-            <a href="#"><i className="fab fa-instagram"></i></a>
-            <a href="#"><i className="fab fa-twitter"></i></a>
-            <a href="#"><i className="fab fa-linkedin-in"></i></a>
-          </div>
+
+            <div className="social-links">
+                            <a href="#" className="social-link"><FaFacebook /></a>
+                            <a href="#" className="social-link"><FaTwitter /></a>
+                            <a href="#" className="social-link"><FaInstagram /></a>
+                            <a href="#" className="social-link"><FaYoutube /></a>
+                          </div>
+
         </div>
       </div>
 
