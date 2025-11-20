@@ -18,7 +18,33 @@ A modern and responsive e-commerce frontend built using **React** and **Vite**. 
 - **CSS 
 
 ## 📁 Project Structure
-mini_shop/ ├── public/ │ └── index.html ├── src/ │ ├── components/ │ │ └── Navbar, Footer, etc. │ ├── pages/ │ │ └── Home.jsx, Contact.jsx, Services.jsx │ ├── App.jsx │ └── main.jsx ├── .gitignore ├── README.md └── package.json
+<pre>
+📁 Job_Portal/
+│
+├─ 📁 client/
+│  ├─ 📁 public/
+│  │  └─ 📄 index.html
+│  └─ 📁 src/
+│     ├─ 📁 components/
+│     ├─ 📁 pages/
+│     ├─ 📁 redux/
+│     ├─ 📁 utils/
+│     ├─ 📄 App.js
+│     ├─ 📄 index.js
+│     └─ 📄 tailwind.css
+│
+├─ 📁 server/
+│  ├─ 📁 controllers/
+│  ├─ 📁 routes/
+│  ├─ 📁 models/
+│  ├─ 📁 middleware/
+│  ├─ 📁 utils/
+│  ├─ 📁 uploads/
+│  └─ 📄 server.js
+│
+└─ 📄 README.md
+</pre>
+
 
 
 ## 📦 Getting Started
@@ -37,8 +63,6 @@ npm install
 # 4. Start the development server
 npm run dev
 
-📄 License
-This project is licensed under the MIT License.
 
 👤 Author
 Made with ❤️ by Ayush Pandey
