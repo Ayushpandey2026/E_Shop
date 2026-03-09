@@ -7,7 +7,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaSearch, FaShoppingCart, FaHeart, FaStar, FaClock, FaFire, FaTag, FaTruck, FaShieldAlt, FaHeadset, FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
-import API from "../api.js";
+import axios from "axios";
 import "../style/Home.css";
 
 export const Home = () => {
@@ -27,12 +27,22 @@ export const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await API.get("/product");
-      console.log("API Response:", response.data);
-      setProductData(response.data);
+      // Fetch products from FakeStoreAPI
+      const response = await axios.get('https://fakestoreapi.com/products');
+      const products = response.data.map((product) => ({
+        _id: product.id.toString(),
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        image: product.image,
+        category: product.category,
+        rating: product.rating
+      }));
+      
+      setProductData(products);
 
       // Extract unique categories
-      const uniqueCategories = [...new Set(response.data.map(product => product.category))];
+      const uniqueCategories = [...new Set(products.map(product => product.category))];
       setCategories(uniqueCategories);
 
       // Set featured categories (first 4)

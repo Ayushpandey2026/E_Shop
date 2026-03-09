@@ -26,22 +26,51 @@ export const ProductDetails = () => {
     const fetchProduct = async () => {
       if (!product) {
         try {
-          const res = await API.get(`/product/${id}`);
-          const data = res.data;
+          // Fetch from FakeStoreAPI
+          const res = await axios.get(`https://fakestoreapi.com/products/${id}`);
+          const data = {
+            _id: res.data.id.toString(),
+            title: res.data.title,
+            price: res.data.price,
+            description: res.data.description,
+            image: res.data.image,
+            category: res.data.category,
+            rating: res.data.rating
+          };
           setProduct(data);
 
-          const res2 = await API.get(
-            `/product?category=${data.category}`
+          // Fetch similar products by category
+          const res2 = await axios.get(
+            `https://fakestoreapi.com/products/category/${data.category}`
           );
-          const data2 = res2.data;
+          const data2 = res2.data.map((p) => ({
+            _id: p.id.toString(),
+            title: p.title,
+            price: p.price,
+            description: p.description,
+            image: p.image,
+            category: p.category,
+            rating: p.rating
+          }));
           setSimilarProducts(data2.filter((p) => p._id !== data._id));
         } catch (err) {
           console.error("Error fetching product:", err);
         }
       } else {
         // Product already in state, fetch similar
-        API.get(`/product?category=${product.category}`)
-          .then((res) => res.data)
+        axios.get(`https://fakestoreapi.com/products/category/${product.category}`)
+          .then((res) => {
+            const data2 = res.data.map((p) => ({
+              _id: p.id.toString(),
+              title: p.title,
+              price: p.price,
+              description: p.description,
+              image: p.image,
+              category: p.category,
+              rating: p.rating
+            }));
+            return data2;
+          })
           .then((data2) =>
             setSimilarProducts(data2.filter((p) => p._id !== product._id))
           );
@@ -51,11 +80,29 @@ export const ProductDetails = () => {
   }, [id, product]);
 
   const handleAddToCart = () => {
-    if (!user) {
-      alert("Please login first!");
-      return navigate("/login");
+    // Get existing cart from localStorage
+    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    
+    // Check if product already in cart
+    const existingIndex = cartItems.findIndex(item => item._id === product._id);
+    
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
+    } else {
+      cartItems.push({
+        _id: product._id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        category: product.category,
+        quantity: 1
+      });
     }
-    dispatch(addToCart({ productId: product._id, quantity: 1, token: localStorage.getItem("token") }));
+    
+    // Save to localStorage
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    
+    alert('Added to cart!');
   };
 
   const handleBuyNow = async () => {

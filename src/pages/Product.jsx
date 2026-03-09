@@ -1,11 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import axios from "axios";
-import API from "../api.js";
 import { addToCart, fetchCart } from "../redux/CartSlice";
+import ProductCard from "../components/ProductCard";
+import PageTransition from "../components/PageTransition";
+import SkeletonLoader from "../components/SkeletonLoader";
 import "../style/product.css";
 
+/**
+ * Product Page Component
+ * Features:
+ * - Modern product grid with lazy loading
+ * - Advanced filtering and sorting
+ * - Wishlist functionality
+ * - Responsive design
+ * - Smooth animations with Framer Motion
+ */
 export const Product = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,6 +30,15 @@ export const Product = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState("");
   const [filtersVisible, setFiltersVisible] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  // Professional placeholder images from Unsplash
+  const PLACEHOLDER_IMAGES = {
+    Shoes: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop',
+    Clothes: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=500&h=500&fit=crop',
+    Electronics: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop',
+    default: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop'
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -25,34 +46,75 @@ export const Product = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await API.get("/product", {
-        params: { category, minPrice, maxPrice, sort },
-      });
-      if (res.data && Array.isArray(res.data)) {
-        setProductData(res.data);
-      } else if (res.data && res.data.products) {
-        setProductData(res.data.products);
-      } else {
-        setProductData([]);
+      setLoading(true);
+      
+      // Fetch products from FakeStoreAPI
+      const response = await axios.get('https://fakestoreapi.com/products');
+      let products = response.data.map((product) => ({
+        _id: product.id.toString(),
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        image: product.image,
+        category: product.category,
+        rating: product.rating,
+        inStock: true,
+        discount: 0,
+        originalPrice: product.price
+      }));
+
+      // Apply filters
+      if (category) {
+        products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
       }
+      
+      if (minPrice) {
+        products = products.filter(p => p.price >= parseFloat(minPrice));
+      }
+      
+      if (maxPrice) {
+        products = products.filter(p => p.price <= parseFloat(maxPrice));
+      }
+
+      // Apply sorting
+      if (sort === "lowToHigh") {
+        products.sort((a, b) => a.price - b.price);
+      } else if (sort === "highToLow") {
+        products.sort((a, b) => b.price - a.price);
+      }
+
+      setProductData(products);
     } catch (err) {
       console.error("Error fetching products:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleAddToCart = async (item) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please login first");
-      return navigate("/login");
-    }
-
-    const res = await dispatch(addToCart({ productId: item._id, quantity: 1 }));
-    if (addToCart.fulfilled.match(res)) {
-      await dispatch(fetchCart());
+  const handleAddToCart = async (product) => {
+    // Get existing cart from localStorage
+    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    
+    // Check if product already in cart
+    const existingIndex = cartItems.findIndex(item => item._id === product._id);
+    
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
     } else {
-      alert(res.payload || "Failed to add item to cart");
+      cartItems.push({
+        _id: product._id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        category: product.category,
+        quantity: 1
+      });
     }
+    
+    // Save to localStorage
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    
+    alert('Added to cart!');
   };
 
   const toggleWishlist = (product) => {
@@ -62,134 +124,198 @@ export const Product = () => {
     );
   };
 
+  const filteredProducts = productData.filter((p) =>
+    p?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="product-page">
-      {!filtersVisible && (
-        <div className="show-filters-button">
-          <button onClick={() => setFiltersVisible(true)}>
-            Show Filters
-          </button>
-        </div>
-      )}
-      <aside className={`filters ${filtersVisible ? '' : 'hidden'}`}>
-        <div className="filter-header">
-          <h2>Filters</h2>
-          <div className="filter-actions">
-            <button onClick={() => setFiltersVisible(!filtersVisible)}>
-              {filtersVisible ? 'Hide' : 'Show'} Filters
+    <PageTransition>
+      <div className="product-page">
+        {/* Mobile Filter Toggle */}
+        {!filtersVisible && (
+          <motion.div className="show-filters-button"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <button onClick={() => setFiltersVisible(true)} className="show-filters-btn">
+              ☰ Show Filters
             </button>
-            <button onClick={() => {
-              setCategory("");
-              setMinPrice("");
-              setMaxPrice("");
-              setSort("");
-            }}>Clear All</button>
-          </div>
-        </div>
+          </motion.div>
+        )}
 
-        <div className="filter-group">
-          <h3>Category</h3>
-          {["Shoes", "Clothes", "Electronics"].map((cat) => (
-            <label key={cat}>
+        {/* Filters Sidebar */}
+        <motion.aside 
+          className={`filters ${filtersVisible ? '' : 'hidden'}`}
+          initial={{ x: -300 }}
+          animate={{ x: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="filter-header">
+            <h2>Filters & Options</h2>
+            <div className="filter-actions">
+              <button 
+                onClick={() => setFiltersVisible(!filtersVisible)}
+                className="filter-toggle-btn"
+              >
+                {filtersVisible ? '✕' : '☰'}
+              </button>
+              <button 
+                onClick={() => {
+                  setCategory("");
+                  setMinPrice("");
+                  setMaxPrice("");
+                  setSort("");
+                }}
+                className="clear-filters-btn"
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          {/* Category Filter */}
+          <div className="filter-group">
+            <h3>Category</h3>
+            <div className="filter-options">
+              {["electronics", "men's clothing", "women's clothing", "jewelery"].map((cat) => (
+                <label key={cat} className="filter-label">
+                  <input
+                    type="radio"
+                    name="category"
+                    value={cat}
+                    checked={category === cat}
+                    onChange={(e) => setCategory(e.target.value)}
+                  />
+                  <span>{cat.charAt(0).toUpperCase() + cat.slice(1)}</span>
+                </label>
+              ))}
+              <label className="filter-label">
+                <input
+                  type="radio"
+                  name="category"
+                  value=""
+                  checked={category === ""}
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+                <span>All Categories</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Price Range Filter */}
+          <div className="filter-group">
+            <h3>Price Range</h3>
+            <div className="price-inputs">
               <input
-                type="radio"
-                name="category"
-                value={cat}
-                checked={category === cat}
-                onChange={(e) => setCategory(e.target.value)}
+                type="number"
+                placeholder="Min"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                className="price-input"
               />
-              {cat}
-            </label>
-          ))}
-          <label>
-            <input
-              type="radio"
-              name="category"
-              value=""
-              checked={category === ""}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-            All
-          </label>
-        </div>
-
-        <div className="filter-group">
-          <h3>Price Range</h3>
-          <div className="price-inputs">
-            <input
-              type="number"
-              placeholder="Min"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-            />
-            <span> - </span>
-            <input
-              type="number"
-              placeholder="Max"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-            />
+              <span className="price-separator">to</span>
+              <input
+                type="number"
+                placeholder="Max"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                className="price-input"
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="filter-group">
-          <h3>Sort By</h3>
-          <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="">Select</option>
-            <option value="lowToHigh">Price: Low to High</option>
-            <option value="highToLow">Price: High to Low</option>
-            <option value="latest">Latest</option>
-          </select>
-        </div>
-      </aside>
+          {/* Sort Filter */}
+          <div className="filter-group">
+            <h3>Sort By</h3>
+            <select 
+              value={sort} 
+              onChange={(e) => setSort(e.target.value)}
+              className="sort-select"
+            >
+              <option value="">Most Relevant</option>
+              <option value="lowToHigh">Price: Low to High</option>
+              <option value="highToLow">Price: High to Low</option>
+              <option value="latest">Latest First</option>
+            </select>
+          </div>
+        </motion.aside>
 
-      <main className="products-section">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        {/* Products Section */}
+        <main className="products-section">
+          {/* Search Bar */}
+          <motion.div className="search-container"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="search-bar">
+              <span className="search-icon">🔍</span>
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <div className="results-info">
+              <p>Found <strong>{filteredProducts.length}</strong> products</p>
+            </div>
+          </motion.div>
 
-        <div className="product-grid">
-          {productData
-            .filter((p) =>
-              p?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((item) => (
-              <div className="product-card" key={item._id}>
-                <div
-                  className="wishlist-icon"
-                  onClick={() => toggleWishlist(item)}
+          {/* Products Grid */}
+          {loading ? (
+            <div className="product-grid">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SkeletonLoader key={i} type="card" />
+              ))}
+            </div>
+          ) : filteredProducts.length > 0 ? (
+            <motion.div 
+              className="product-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {filteredProducts.map((product, index) => (
+                <motion.div
+                  key={product._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
                 >
-                  {wishlist.find((w) => w._id === item._id) ? "❤️" : "🤍"}
-                </div>
-
-                <img src={item.image} alt={item.title} />
-                <h3>{item.title}</h3>
-                <p className="price">₹{item.price}</p>
-                <p className="category">{item.category}</p>
-                <p className="rating">⭐ {item.rating?.rate} ({item.rating?.count})</p>
-
-                <div className="buttons">
-                  <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
-                  <button
-                    className="outline"
-                    onClick={() =>
-                      navigate(`/product/${item._id}`, {
-                        state: { product: item },
-                      })
-                    }
-                  >
-                    View Details
-                  </button>
-                </div>
-              </div>
-            ))}
-        </div>
-      </main>
-    </div>
+                  <ProductCard
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                    onWishlistToggle={toggleWishlist}
+                    isInWishlist={wishlist.some((w) => w._id === product._id)}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div 
+              className="no-products"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <p className="no-products-icon">📦</p>
+              <p className="no-products-text">No products found</p>
+              <button 
+                onClick={() => {
+                  setSearchTerm("");
+                  setCategory("");
+                  setMinPrice("");
+                  setMaxPrice("");
+                }}
+                className="reset-btn"
+              >
+                Reset Filters
+              </button>
+            </motion.div>
+          )}
+        </main>
+      </div>
+    </PageTransition>
   );
 };
