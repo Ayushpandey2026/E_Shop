@@ -13,6 +13,7 @@ export const loginThunk = createAsyncThunk(
   }
 );
 
+// We can also add a registerThunk similarly if needed
 const slice = createSlice({
   name: "auth",
   initialState: { user: null, token: localStorage.getItem("token") || null, status: "idle", error: null },
