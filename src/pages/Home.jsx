@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../redux/CartSlice";
+import API from "../api.js";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaSearch, FaShoppingCart, FaHeart, FaStar, FaClock, FaFire, FaTag, FaTruck, FaShieldAlt, FaHeadset, FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
-import axios from "axios";
 import "../style/Home.css";
 
 export const Home = () => {
@@ -27,17 +27,9 @@ export const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      // Fetch products from FakeStoreAPI
-      const response = await axios.get('https://fakestoreapi.com/products');
-      const products = response.data.map((product) => ({
-        _id: product.id.toString(),
-        title: product.title,
-        price: product.price,
-        description: product.description,
-        image: product.image,
-        category: product.category,
-        rating: product.rating
-      }));
+// Fetch products from backend API
+      const response = await API.get('/product');
+      const products = response.data;
       
       setProductData(products);
 

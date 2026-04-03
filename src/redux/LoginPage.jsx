@@ -1,6 +1,6 @@
 import axiosInstance from "../utils/axiosInstance.jsx";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";  // 👈 import useAuth
+import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchCart } from "./CartSlice";
@@ -10,46 +10,45 @@ export const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "",
+    role: "user", // Default to user
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { setUser } = useAuth();  // 👈 context se setUser le liya
+  const { setUser } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-    const res = await axiosInstance.post("/auth/login", formData);
+      const res = await axiosInstance.post("/auth/login", formData);
 
-    const { token, user } = res.data;
+      const { token, user } = res.data;
 
-    // ✅ Store auth data
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", user.role);
+      // Store auth data
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("role", user.role);
 
-    setUser(user); // ✅ Update context or state
+      setUser(user);
 
-    // Dispatch fetchCart after login to update cart count
-    dispatch(fetchCart(token));
+      // Fetch cart
+      dispatch(fetchCart(token));
 
-    // ✅ Redirect based on role
-    if (user.role === "admin") {
-      console.log("role",user.role);
-      navigate("/admin"); 
-    } else {
-      navigate("/"); 
+      // Redirect based on role
+      if (user.role === "admin") {
+        navigate("/admin"); 
+      } else {
+        navigate("/"); 
+      }
+
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
     }
-
-  } catch (err) {
-    alert(err.response?.data?.message || "Login failed");
-  }
-};
-
+  };
 
   return (
     <div className="login-container">
@@ -87,3 +86,4 @@ const handleSubmit = async (e) => {
     </div>
   );
 };
+

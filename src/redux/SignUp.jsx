@@ -1,35 +1,43 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance.jsx";
+import { useAuth } from "../context/AuthContext";
 import "../style/Signup.css";
 
 export const SignUp = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
+  const { setUser } = useAuth();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post("/auth/signup", {
-        name,
-        email,
-        password,
-      });
+      const response = await axiosInstance.post("/auth/signup", formData);
 
-      localStorage.setItem("token", response.data.token); // Assuming token is returned
+      const { token, user } = response.data;
+
+      // Store auth data like login
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      setUser(user); // Update context
+
       alert("Signup successful!");
-      console.log("Signup successful:navigating to cart");
-      
-      navigate("/product"); 
+      navigate("/");
     } catch (error) {
-        
-     if(error.response && error.response.data && error.response.data.message){
-        alert("user already exist")
-     }else{
-        alert("something went wrong");
-     }
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(error.response.data.message);
+      } else {
+        alert("Something went wrong");
+      }
     }
   };
 
@@ -41,28 +49,34 @@ export const SignUp = () => {
           <label htmlFor="name">Full Name</label>
           <input
             type="text"
+            name="name"
             id="name"
             placeholder="Enter your name"
             required
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={handleChange}
           />
 
           <label htmlFor="email">Email</label>
           <input
             type="email"
+            name="email"
             id="email"
             placeholder="Enter your email"
             required
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
           />
 
           <label htmlFor="password">Password</label>
           <input
             type="password"
+            name="password"
             id="password"
             placeholder="Enter your password"
             required
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
           />
 
           <button type="submit" className="submit-btn">Sign Up</button>
@@ -73,3 +87,4 @@ export const SignUp = () => {
     </div>
   );
 };
+

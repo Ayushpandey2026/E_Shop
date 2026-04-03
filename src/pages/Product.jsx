@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../api.js";
 import { addToCart, fetchCart } from "../redux/CartSlice";
 import ProductCard from "../components/ProductCard";
 import PageTransition from "../components/PageTransition";
@@ -48,40 +48,25 @@ export const Product = () => {
     try {
       setLoading(true);
       
-      // Fetch products from FakeStoreAPI
-      const response = await axios.get('https://fakestoreapi.com/products');
+      // Build query params for backend
+      const params = new URLSearchParams();
+      if (category) params.append('category', category);
+      if (minPrice) params.append('minPrice', minPrice);
+      if (maxPrice) params.append('maxPrice', maxPrice);
+      if (sort === "lowToHigh") params.append('sort', 'lowToHigh');
+      else if (sort === "highToLow") params.append('sort', 'highToLow');
+      else if (sort) params.append('sort', sort);
+
+      const queryUrl = params.toString() ? `/product?${params.toString()}` : '/product';
+      
+      // Fetch from backend API (filters handled server-side)
+      const response = await API.get(queryUrl);
       let products = response.data.map((product) => ({
-        _id: product.id.toString(),
-        title: product.title,
-        price: product.price,
-        description: product.description,
-        image: product.image,
-        category: product.category,
-        rating: product.rating,
-        inStock: true,
-        discount: 0,
-        originalPrice: product.price
+        ...product,
+        inStock: product.stock !== undefined ? product.stock > 0 : true,
+        discount: product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0,
+        originalPrice: product.originalPrice || null
       }));
-
-      // Apply filters
-      if (category) {
-        products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
-      }
-      
-      if (minPrice) {
-        products = products.filter(p => p.price >= parseFloat(minPrice));
-      }
-      
-      if (maxPrice) {
-        products = products.filter(p => p.price <= parseFloat(maxPrice));
-      }
-
-      // Apply sorting
-      if (sort === "lowToHigh") {
-        products.sort((a, b) => a.price - b.price);
-      } else if (sort === "highToLow") {
-        products.sort((a, b) => b.price - a.price);
-      }
 
       setProductData(products);
     } catch (err) {
