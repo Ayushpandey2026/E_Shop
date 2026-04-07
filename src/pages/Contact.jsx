@@ -1,5 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../api.js";
+import Swal from "sweetalert2";
 import "../style/Contact.css";
 export const Contact = () => {
             const[name,setName] = useState("");
@@ -7,26 +8,40 @@ export const Contact = () => {
             const[subject,setSubject] = useState("");
             const[message, setMessage] = useState("");  
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        axios.post("/query/insert", {
-            name,
-            email,
-            subject,
-            message,
-        })
-        .then((response) => {
+        try {
+            // Combine subject and message for the backend
+            const fullMessage = subject ? `${subject}: ${message}` : message;
+            
+            const response = await API.post("/enquiry/insert", {
+                name,
+                email,
+                phone: "", // optional field
+                message: fullMessage,
+            });
             console.log("Message sent successfully:", response.data);   
-            alert("Thank you for contacting us! We will get back to you soon.");
+            Swal.fire({
+                icon: "success",
+                title: "Message Sent!",
+                text: "Thank you for contacting us! We will get back to you soon.",
+                timer: 2000,
+                showConfirmButton: false,
+            });
             setName("");
             setEmail("");
             setSubject("");
             setMessage("");
-        })
-        .catch((error) => {
+        }
+        catch (error) {
             console.error("Error sending message:", error);
-            alert("There was an error sending your message. Please try again later.");
-        });
+            const errorMessage = error.response?.data?.message || "There was an error sending your message. Please try again later.";
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: errorMessage,
+            });
+        }
     }
     return (
         <div className="contact-container">

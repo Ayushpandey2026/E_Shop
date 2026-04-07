@@ -1,10 +1,10 @@
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { addToCart } from "../redux/CartSlice";
 import axios from "axios";
 import API from "../api.js";
+import Swal from "sweetalert2";
 import ReviewsSection from "../components/ReviewsSection";
 import { useAuth } from "../context/AuthContext";
 import "../style/productDetail.css";
@@ -13,13 +13,12 @@ export const ProductDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(location.state?.product || null);
-  const [similarProducts, setSimilarProducts] = useState([]);
-
   const dispatch = useDispatch();
   const cartState = useSelector((state) => state.cart);
   const { loading, error } = cartState;
-  const { user } = useAuth();
+  const { isLoggedIn } = useAuth();
+  const [product, setProduct] = useState(location.state?.product || null);
+  const [similarProducts, setSimilarProducts] = useState([]);
 
   // Fetch product and similar products
   useEffect(() => {
@@ -79,34 +78,41 @@ export const ProductDetails = () => {
     fetchProduct();
   }, [id, product]);
 
-  const handleAddToCart = () => {
-    // Get existing cart from localStorage
-    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    
-    // Check if product already in cart
-    const existingIndex = cartItems.findIndex(item => item._id === product._id);
-    
-    if (existingIndex > -1) {
-      cartItems[existingIndex].quantity += 1;
-    } else {
-      cartItems.push({
-        _id: product._id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-        category: product.category,
-        quantity: 1
+  const handleAddToCart = async () => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login to add items to cart",
+        confirmButtonText: "Go to Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
+      return;
+    }
+
+    try {
+      await dispatch(addToCart({ productId: product._id, quantity: 1 }));
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart!",
+        text: `${product.title} has been added to your cart`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error || 'Failed to add to cart',
       });
     }
-    
-    // Save to localStorage
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    
-    alert('Added to cart!');
   };
 
   const handleBuyNow = async () => {
-    if (!user) {
+    if (!isLoggedIn) {
       alert("Please login first!");
       return navigate("/login");
     }
@@ -141,7 +147,7 @@ export const ProductDetails = () => {
                 {
                   ...response,
                   cart: [{ productId: product._id, qty: 1 }],
-                  userId: user.id,
+                  userId: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).id : null,
                 },
                 { headers: { Authorization: `Bearer ${token}` } }
               );
@@ -153,8 +159,8 @@ export const ProductDetails = () => {
             }
           },
           prefill: {
-            name: user.name || "", // Optional
-            email: user.email || "", // Optional
+            name: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).name || "" : "",
+            email: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).email || "" : "",
           },
           theme: {
             color: "#3399cc",
@@ -223,3 +229,4 @@ export const ProductDetails = () => {
     </div>
   );
 };
+

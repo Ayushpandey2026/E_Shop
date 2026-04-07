@@ -65,10 +65,32 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [user, setUserState] = useState(null);
+  const [token, setTokenState] = useState(localStorage.getItem("token") || null);
 
   const isLoggedIn = !!token;
+
+  // Public setToken function for signup/login
+  const setToken = (newToken) => {
+    if (newToken) {
+      localStorage.setItem("token", newToken);
+      setTokenState(newToken);
+    } else {
+      localStorage.removeItem("token");
+      setTokenState(null);
+    }
+  };
+
+  // Public setUser function for signup/login
+  const setUser = (newUser) => {
+    if (newUser) {
+      localStorage.setItem("user", JSON.stringify(newUser));
+      setUserState(newUser);
+    } else {
+      localStorage.removeItem("user");
+      setUserState(null);
+    }
+  };
 
   // LOGIN
   const login = async (email, password, role) => {
@@ -81,9 +103,6 @@ export const AuthProvider = ({ children }) => {
     const data = res.data;
 
     if (data.token) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
       setToken(data.token);
       setUser(data.user);
     }
@@ -91,9 +110,6 @@ export const AuthProvider = ({ children }) => {
 
   // LOGOUT
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
     setToken(null);
     setUser(null);
   };
@@ -103,8 +119,8 @@ export const AuthProvider = ({ children }) => {
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
 
-    if (savedUser) setUser(JSON.parse(savedUser));
-    if (savedToken) setToken(savedToken);
+    if (savedUser) setUserState(JSON.parse(savedUser));
+    if (savedToken) setTokenState(savedToken);
   }, []);
 
   return (
@@ -113,6 +129,8 @@ export const AuthProvider = ({ children }) => {
         user,
         token,
         isLoggedIn,
+        setUser,
+        setToken,
         login,
         logout
       }}

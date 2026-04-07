@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchCart } from "./CartSlice";
+import Swal from "sweetalert2";
 import "../style/LoginPage.css";
 
 export const LoginPage = () => {
@@ -15,7 +16,7 @@ export const LoginPage = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { setUser } = useAuth();
+  const { setUser, setToken } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,25 +29,43 @@ export const LoginPage = () => {
 
       const { token, user } = res.data;
 
-      // Store auth data
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("role", user.role);
+      if (token && user) {
+        // Use context functions to update state
+        setToken(token);
+        setUser(user);
 
-      setUser(user);
+        // Fetch cart
+        dispatch(fetchCart(token));
 
-      // Fetch cart
-      dispatch(fetchCart(token));
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful!",
+          text: `Welcome back, ${user.name}!`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
 
-      // Redirect based on role
-      if (user.role === "admin") {
-        navigate("/admin"); 
+        // Redirect based on role
+        if (user.role === "admin") {
+          navigate("/admin"); 
+        } else {
+          navigate("/"); 
+        }
       } else {
-        navigate("/"); 
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: "Missing token or user data",
+        });
       }
 
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      const errorMessage = err.response?.data?.message || "Login failed";
+      Swal.fire({
+        icon: "error",
+        title: "Login Error",
+        text: errorMessage,
+      });
     }
   };
 

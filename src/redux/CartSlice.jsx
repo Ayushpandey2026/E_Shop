@@ -49,19 +49,18 @@ export const addToCart = createAsyncThunk(
 // Remove from Cart
 export const removeFromCart = createAsyncThunk(
   "cart/removeFromCart",
-  async ({productId,quantity}, { rejectWithValue }) => {
+  async ({productId}, { rejectWithValue }) => {
     try {
-      const res = await API.post(
-        "/cart/remove",{productId,quantity},
+      const res = await API.delete(
+        "/cart/remove",
         {
+          data: { productId },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           withCredentials: true,
-          data:{productId}
         }
       );
-      console.log("deleted data",res.data);
       return res.data;
     } catch (e) {
       return rejectWithValue(e.response?.data?.message || "Remove failed");

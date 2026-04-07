@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance.jsx";
 import { useAuth } from "../context/AuthContext";
+import Swal from "sweetalert2";
 import "../style/Signup.css";
 
 export const SignUp = () => {
@@ -11,7 +12,7 @@ export const SignUp = () => {
     password: "",
   });
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { setUser, setToken } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,20 +25,33 @@ export const SignUp = () => {
 
       const { token, user } = response.data;
 
-      // Store auth data like login
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      if (token && user) {
+        // Use context functions instead of localStorage
+        setToken(token);
+        setUser(user);
 
-      setUser(user); // Update context
-
-      alert("Signup successful!");
-      navigate("/");
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        alert(error.response.data.message);
+        Swal.fire({
+          icon: "success",
+          title: "Signup Successful!",
+          text: `Welcome, ${user.name}!`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        navigate("/");
       } else {
-        alert("Something went wrong");
+        Swal.fire({
+          icon: "error",
+          title: "Signup Failed",
+          text: "Missing token or user data",
+        });
       }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Something went wrong";
+      Swal.fire({
+        icon: "error",
+        title: "Signup Error",
+        text: errorMessage,
+      });
     }
   };
 

@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import API from "../api.js";
+import { useAuth } from "../context/AuthContext";
 import { addToCart, fetchCart } from "../redux/CartSlice";
 import ProductCard from "../components/ProductCard";
 import PageTransition from "../components/PageTransition";
@@ -21,6 +22,7 @@ import "../style/product.css";
 export const Product = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   const [productData, setProductData] = useState([]);
   const [wishlist, setWishlist] = useState([]);
@@ -77,29 +79,18 @@ export const Product = () => {
   };
 
   const handleAddToCart = async (product) => {
-    // Get existing cart from localStorage
-    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    
-    // Check if product already in cart
-    const existingIndex = cartItems.findIndex(item => item._id === product._id);
-    
-    if (existingIndex > -1) {
-      cartItems[existingIndex].quantity += 1;
-    } else {
-      cartItems.push({
-        _id: product._id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-        category: product.category,
-        quantity: 1
-      });
+    if (!isLoggedIn) {
+      alert('Please login to add to cart!');
+      navigate('/login');
+      return;
     }
-    
-    // Save to localStorage
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    
-    alert('Added to cart!');
+
+    try {
+      await dispatch(addToCart({ productId: product._id, quantity: 1 }));
+      alert('Added to cart!');
+    } catch (error) {
+      alert(error || 'Failed to add to cart');
+    }
   };
 
   const toggleWishlist = (product) => {
@@ -304,3 +295,4 @@ export const Product = () => {
     </PageTransition>
   );
 };
+

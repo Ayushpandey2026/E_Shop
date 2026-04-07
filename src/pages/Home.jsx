@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { addToCart } from "../redux/CartSlice";
 import API from "../api.js";
+import Swal from "sweetalert2";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -13,6 +15,7 @@ import "../style/Home.css";
 export const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
   const [productData, setProductData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,7 +30,7 @@ export const Home = () => {
 
   const fetchProducts = async () => {
     try {
-// Fetch products from backend API
+      // Fetch products from backend API
       const response = await API.get('/product');
       const products = response.data;
       
@@ -47,8 +50,37 @@ export const Home = () => {
     }
   };
 
-  const handleAddToCart = (item) => {
-    dispatch(addToCart(item));
+  const handleAddToCart = async (item) => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please login to add items to cart",
+        confirmButtonText: "Go to Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/login');
+        }
+      });
+      return;
+    }
+
+    try {
+      await dispatch(addToCart({ productId: item._id, quantity: 1 }));
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart!",
+        text: `${item.title} has been added to your cart`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error || 'Failed to add to cart',
+      });
+    }
   };
 
   const handleSearch = (e) => {
@@ -61,7 +93,13 @@ export const Home = () => {
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     // Handle newsletter subscription
-    alert("Thank you for subscribing!");
+    Swal.fire({
+      icon: "success",
+      title: "Subscribed!",
+      text: "Thank you for subscribing to our newsletter!",
+      timer: 1500,
+      showConfirmButton: false,
+    });
     setEmail("");
   };
 
@@ -374,5 +412,4 @@ export const Home = () => {
     </div>
   );
 };
-
 
