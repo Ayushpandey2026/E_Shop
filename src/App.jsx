@@ -4,10 +4,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { useAuth } from "./context/AuthContext";
 
-// Import styles
-import "./style/GlobalStyles.css";
-import "./App.css";
-
 // Lazy loaded pages
 const Home = lazy(() => import("./pages/Home").then(m => ({ default: m.Home })));
 const Product = lazy(() => import("./pages/Product").then(m => ({ default: m.Product })));
@@ -16,6 +12,7 @@ const Services = lazy(() => import("./pages/Services").then(m => ({ default: m.S
 const Contact = lazy(() => import("./pages/Contact").then(m => ({ default: m.Contact })));
 const ProductDetails = lazy(() => import("./pages/ProductDetails").then(m => ({ default: m.ProductDetails })));
 const Cart = lazy(() => import("./pages/Cart").then(m => ({ default: m.Cart })));
+const Wishlist = lazy(() => import("./pages/Wishlist").then(m => ({ default: m.default || m })));
 const LoginPage = lazy(() => import("./redux/LoginPage").then(m => ({ default: m.LoginPage })));
 const SignUp = lazy(() => import("./redux/SignUp").then(m => ({ default: m.SignUp })));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword").then(m => ({ default: m.ForgotPassword })));
@@ -50,7 +47,7 @@ const AdminRoute = ({ children }) => {
  * Wraps pages with loading skeleton while lazy components load
  */
 const PageLoadingFallback = () => (
-  <div className="page-loading-fallback">
+  <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-6">
     <SkeletonLoader type="fullpage" />
   </div>
 );
@@ -86,6 +83,7 @@ const router = createBrowserRouter([
       { path: "services", element: <LazyPageWrapper component={Services} /> },
       { path: "contact", element: <LazyPageWrapper component={Contact} /> },
       { path: "cart", element: <LazyPageWrapper component={Cart} /> },
+      { path: "wishlist", element: <LazyPageWrapper component={Wishlist} /> },
       { path: "login", element: <LazyPageWrapper component={LoginPage} /> },
       { path: "signup", element: <LazyPageWrapper component={SignUp} /> },
       { path: "forgot-password", element: <LazyPageWrapper component={ForgotPassword} /> },
@@ -93,6 +91,7 @@ const router = createBrowserRouter([
       { path: "orders", element: <LazyPageWrapper component={Orders} /> },
       { path: "profile", element: <LazyPageWrapper component={MyProfile} /> },
       { path: "edit-address/new", element: <LazyPageWrapper component={EditAddress} /> },
+      { path: "edit-address/:id", element: <LazyPageWrapper component={EditAddress} /> },
     ],
   },
   {

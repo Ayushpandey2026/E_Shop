@@ -101,6 +101,33 @@
   box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
 }
 
+/* Wishlist button */
+.wishlist-btn {
+  background: linear-gradient(135deg, #e0e0e0, #f5f5f5) !important;
+  color: #333 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.wishlist-btn:hover {
+  background: linear-gradient(135deg, #d0d0d0, #e8e8e8) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.wishlist-btn.active {
+  background: linear-gradient(135deg, #ff6b9d, #ff3d7a) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3) !important;
+}
+
+.wishlist-btn.active:hover {
+  background: linear-gradient(135deg, #ff5a8f, #ff2a6b) !important;
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4) !important;
+}
+
 /* ===== Similar Products Section ===== */
 .similar-products {
   width: 100%;

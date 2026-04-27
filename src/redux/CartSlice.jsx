@@ -101,7 +101,14 @@ export const clearCart = createAsyncThunk(
 const slice = createSlice({
   name: "cart",
   initialState: { items: [], status: "idle", error: null, count: 0  },
-  reducers: {},
+  reducers: {
+    clearCartState: (state) => {
+      state.items = [];
+      state.count = 0;
+      state.error = null;
+      state.status = "idle";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCart.fulfilled, (state, action) => {
@@ -137,6 +144,7 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
+export const { clearCartState } = slice.actions;
 export const selectCartCount = (state) => state.cart.count;
 
 

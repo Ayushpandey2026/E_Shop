@@ -1,7 +1,7 @@
 import { useState } from "react";
 import API from "../api.js";
 import Swal from "sweetalert2";
-import "../style/Contact.css";
+
 export const Contact = () => {
             const[name,setName] = useState("");
             const[email,setEmail] = useState("");

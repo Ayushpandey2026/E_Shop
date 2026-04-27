@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import SkeletonLoader from './SkeletonLoader';
-import '../style/LazyImage.css';
+
 
 /**
  * LazyImage Component

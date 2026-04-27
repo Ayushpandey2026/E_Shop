@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import API from "../api.js";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import "../style/MyProfile.css";
+
 
 export const MyProfile = () => {
   const navigate = useNavigate();
@@ -326,7 +326,7 @@ export const MyProfile = () => {
                       <div className="om-info">
                         <div className="om-title">{order.items?.[0]?.productId?.title || "Product"}</div>
                         <div className="om-meta">₹{order.totalAmount} • {new Date(order.createdAt).toLocaleDateString()}</div>
-                        <div className={`om-status ${order.status?.toLowerCase()}`}>{order.status}</div>
+                        <div className={`om-status ${order.status?.toLowerCase().replace(/\s+/g, "-")}`}>{order.status}</div>
                       </div>
                       <div className="om-actions">
                         <button onClick={() => viewOrder(order._id)}>View</button>
@@ -389,7 +389,57 @@ export const MyProfile = () => {
           )}
 
           {/* Other tabs placeholder */}
-          {['addresses', 'payments', 'cart', 'recommendations'].includes(activeTab) && (
+          {activeTab === "addresses" && (
+            <div className="card">
+              <div className="section-header">
+                <h2>My Addresses</h2>
+                <button className="btn-primary" onClick={() => navigate("/edit-address/new")}>
+                  Add New Address
+                </button>
+              </div>
+              {addresses.length === 0 ? (
+                <div className="empty-state">
+                  <p>No addresses saved yet.</p>
+                  <button className="btn-primary" onClick={() => navigate("/edit-address/new")}>
+                    Add First Address
+                  </button>
+                </div>
+              ) : (
+                <div className="addresses-grid">
+                  {addresses.map((addr) => (
+                    <div key={addr._id} className="address-card">
+                      <div className="address-header">
+                        <h3>{addr.type}</h3>
+                        {addr.isDefault && <span className="badge">Default</span>}
+                      </div>
+                      <p className="address-text">
+                        {addr.street}<br />
+                        {addr.city}, {addr.state} {addr.postalCode}<br />
+                        {addr.country}
+                      </p>
+                      {addr.phone && <p className="address-phone">{addr.phone}</p>}
+                      <div className="address-actions">
+                        <button 
+                          className="btn-edit"
+                          onClick={() => navigate(`/edit-address/${addr._id}`)}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          className="btn-delete"
+                          onClick={() => removeAddress(addr._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {['payments', 'cart', 'recommendations'].includes(activeTab) && (
             <div className="card">
               <h2>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h2>
               <p>Content for {activeTab} tab.</p>

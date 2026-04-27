@@ -1,52 +1,5 @@
-/* ===== APP-WIDE STYLES ===== */
-
-/* ===== MAIN LAYOUT ===== */
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: var(--bg-primary);
-}
-
-/* ===== PAGE LOADING FALLBACK ===== */
-.page-loading-fallback {
-  min-height: calc(100vh - 70px);
-  padding: var(--spacing-xl);
-  animation: fadeIn var(--transition-base) ease-out;
-}
-
-/* ===== LOADING SPINNER ===== */
-.spinner {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(90, 103, 216, 0.2);
-  border-radius: 50%;
-  border-top-color: var(--primary);
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* ===== TOAST NOTIFICATIONS ===== */
-.toast-container {
-  position: fixed;
-  top: var(--spacing-lg);
-  right: var(--spacing-lg);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  pointer-events: none;
-}
-
+/* FIX: Added missing class name '.toast' */
 .toast {
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -54,6 +7,7 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   border-left: 4px solid var(--primary);
+  /* Ensure slideInRight animation is defined in your GlobalStyles */
   animation: slideInRight var(--transition-base) ease-out;
   display: flex;
   align-items: center;
@@ -64,29 +18,15 @@
   font-weight: var(--font-weight-medium);
 }
 
-.toast.success {
-  border-left-color: var(--success);
-}
-
-.toast.error {
-  border-left-color: var(--error);
-}
-
-.toast.warning {
-  border-left-color: var(--warning);
-}
-
-.toast.info {
-  border-left-color: var(--primary);
-}
+.toast.success { border-left-color: var(--success); }
+.toast.error   { border-left-color: var(--error); }
+.toast.warning { border-left-color: var(--warning); }
+.toast.info    { border-left-color: var(--primary); }
 
 /* ===== MODAL OVERLAY ===== */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0; /* Shortcut for top, left, right, bottom: 0 */
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -132,7 +72,6 @@
   font-size: 24px;
   cursor: pointer;
   color: var(--text-tertiary);
-  padding: var(--spacing-sm);
   width: 36px;
   height: 36px;
   display: flex;
@@ -163,6 +102,7 @@
   padding-top: var(--spacing-lg);
 }
 
+/* Specific button styles for modal footer */
 .modal-footer button {
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
@@ -183,41 +123,7 @@
   border-color: var(--neutral-200);
 }
 
-/* ===== SCROLLBAR STYLING (covered in GlobalStyles) ===== */
-
-/* ===== PAGE TRANSITIONS ===== */
-.page-enter {
-  animation: slideInUp var(--transition-base) ease-out;
-}
-
-.page-exit {
-  animation: fadeIn var(--transition-fast) ease-out reverse;
-}
-
-/* ===== ERROR BOUNDARY ===== */
-.error-boundary {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  padding: var(--spacing-xl);
-  text-align: center;
-}
-
-.error-boundary h1 {
-  font-size: var(--font-size-4xl);
-  margin-bottom: var(--spacing-md);
-  color: var(--error);
-}
-
-.error-boundary p {
-  font-size: var(--font-size-lg);
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-lg);
-}
-
-/* ===== UTILITIES ===== */
+/* ===== UTILITIES & RESPONSIVE ===== */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -230,82 +136,29 @@
   border-width: 0;
 }
 
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
-  .toast-container {
-    top: auto;
-    bottom: var(--spacing-lg);
-    left: var(--spacing-sm);
-    right: var(--spacing-sm);
-  }
-
   .toast {
     max-width: 100%;
     font-size: var(--font-size-xs);
-    padding: var(--spacing-sm) var(--spacing-md);
   }
-
   .modal-content {
     padding: var(--spacing-lg);
-    max-height: 100vh;
-  }
-
-  .modal-title {
-    font-size: var(--font-size-xl);
-  }
-
-  .error-boundary {
-    padding: var(--spacing-lg);
-  }
-
-  .error-boundary h1 {
-    font-size: var(--font-size-3xl);
   }
 }
 
 @media (max-width: 480px) {
-  .toast {
-    padding: var(--spacing-sm);
-    gap: var(--spacing-sm);
-  }
-
-  .modal-content {
-    padding: var(--spacing-md);
-    border-radius: var(--radius-lg);
-  }
-
-  .modal-header {
-    margin-bottom: var(--spacing-md);
-  }
-
   .modal-footer {
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; /* Stack buttons on mobile */
   }
-
   .modal-footer button {
     width: 100%;
   }
 }
 
-/* ===== REDUCED MOTION ===== */
+/* Reduced Motion for Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .spinner,
-  .toast,
-  .modal-overlay,
-  .modal-content,
-  .modal-close,
-  .page-enter,
-  .page-exit {
-    animation: none;
-    transition: none;
+  .toast, .modal-overlay, .modal-content {
+    animation: none !important;
+    transition: none !important;
   }
 }

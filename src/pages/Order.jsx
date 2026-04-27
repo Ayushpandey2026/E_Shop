@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import API from "../api.js";
-import "../style/Order.css";
+
 
 export const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -100,32 +100,35 @@ export const Orders = () => {
       {/* Orders List */}
       <div className="orders-list">
         {filteredOrders.length > 0 ? (
-          filteredOrders.map((order) => (
-            <div key={order._id} className="order-card">
-              {order.items.map((item) => (
-                <div key={item._id} className="order-item">
-                  <img
-                    src={item.productId?.image || "https://via.placeholder.com/120"}
-                    alt={item.productId?.title}
-                  />
-                  <div className="order-info">
-                    <h3>{item.productId?.title}</h3>
-                    <p>₹{item.productId?.price}</p>
-                    <p>Qty: {item.quantity}</p>
-                    <p>
-                      Ordered on:{" "}
-                      <span className="delivery-date">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </span>
-                    </p>
-                    <p className={`status ${order.status?.toLowerCase()}`}>
-                      {order.status}
-                    </p>
+          filteredOrders.map((order) => {
+            const statusClass = order.status?.toLowerCase().replace(/\s+/g, "-") || "";
+            return (
+              <div key={order._id} className="order-card">
+                {order.items.map((item) => (
+                  <div key={item._id} className="order-item">
+                    <img
+                      src={item.productId?.image || "https://via.placeholder.com/120"}
+                      alt={item.productId?.title}
+                    />
+                    <div className="order-info">
+                      <h3>{item.productId?.title}</h3>
+                      <p>₹{item.productId?.price}</p>
+                      <p>Qty: {item.quantity}</p>
+                      <p>
+                        Ordered on:{" "}
+                        <span className="delivery-date">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </span>
+                      </p>
+                      <p className={`status ${statusClass}`}>
+                        {order.status}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ))
+                ))}
+              </div>
+            );
+          })
         ) : (
           <p>No orders found.</p>
         )}

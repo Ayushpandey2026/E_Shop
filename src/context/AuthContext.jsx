@@ -60,10 +60,13 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import API from "../api.js";
+import { useDispatch } from "react-redux";
+import { clearCartState } from "../redux/CartSlice";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const dispatch = useDispatch();
 
   const [user, setUserState] = useState(null);
   const [token, setTokenState] = useState(localStorage.getItem("token") || null);
@@ -112,6 +115,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
+    dispatch(clearCartState());
   };
 
   // Restore session on refresh
