@@ -1,0 +1,137 @@
+.edit-address-container {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.edit-address-container h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.75rem;
+  color: #0f172a;
+}
+
+.edit-address-container .error-message {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  font-weight: 600;
+}
+
+.edit-address-container .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.edit-address-container .form-group label {
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.edit-address-container .form-group input,
+.edit-address-container .form-group select {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border-radius: 0.95rem;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-address-container .form-group input:focus,
+.edit-address-container .form-group select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+  background: #ffffff;
+}
+
+.edit-address-container .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.edit-address-container .form-group.checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.edit-address-container .form-group.checkbox label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.edit-address-container .form-group.checkbox input {
+  width: auto;
+  min-width: 1.1rem;
+  height: 1.1rem;
+}
+
+.edit-address-container .edit-btn-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.edit-address-container .save-btn,
+.edit-address-container .cancel-btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0.95rem;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.edit-address-container .save-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+}
+
+.edit-address-container .save-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.2);
+}
+
+.edit-address-container .cancel-btn {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.edit-address-container .cancel-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #cbd5e1;
+}
+
+.edit-address-container .save-btn:disabled,
+.edit-address-container .cancel-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .edit-address-container {
+    padding: 1.5rem;
+  }
+
+  .edit-address-container .form-row {
+    grid-template-columns: 1fr;
+  }
+}

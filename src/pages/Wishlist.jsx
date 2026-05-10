@@ -2,16 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import Swal from "sweetalert2";
+import { useAuth } from "../context/AuthContext";
 
 
 const Wishlist = () => {
+  const { isLoggedIn } = useAuth();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      setWishlistItems([]);
+      setLoading(false);
+      return;
+    }
     fetchWishlist();
-  }, []);
+  }, [isLoggedIn]);
 
   const fetchWishlist = async () => {
     try {
@@ -72,6 +79,19 @@ const Wishlist = () => {
 
   if (loading) {
     return <div className="wishlist-loading">Loading wishlist...</div>;
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <div className="wishlist-container">
+        <div className="wishlist-empty">
+          <p>Please login to view your wishlist.</p>
+          <button onClick={() => navigate("/login")} className="btn-continue-shopping">
+            Login Now
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

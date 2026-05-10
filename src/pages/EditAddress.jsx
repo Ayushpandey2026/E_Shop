@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import API from "../api";
+import "../style/EditAddress.css";
 
 
 export const EditAddress = () => {
@@ -9,6 +10,9 @@ export const EditAddress = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const isNewAddress = id === "new" || !id;
+  const isValidAddressId = (value) => /^[0-9a-fA-F]{24}$/.test(value);
 
   const [address, setAddress] = useState({
     type: "Home",
@@ -22,13 +26,20 @@ export const EditAddress = () => {
   });
 
   useEffect(() => {
-    if (id !== "new") {
+    if (!isNewAddress && isValidAddressId(id)) {
       fetchAddress();
+    } else if (!isNewAddress && !isValidAddressId(id)) {
+      setError("Invalid address ID");
     }
   }, [id]);
 
   const fetchAddress = async () => {
     try {
+      if (!isValidAddressId(id)) {
+        setError("Invalid address selected");
+        return;
+      }
+
       setLoading(true);
       const response = await API.get(`/user/addresses`);
       const addresses = response.data;
@@ -37,16 +48,12 @@ export const EditAddress = () => {
       if (addressToEdit) {
         setAddress(addressToEdit);
       } else {
+        console.warn("Address not found in list");
         setError("Address not found");
       }
     } catch (err) {
-      console.error("Error fetching address:", err);
-      setError("Failed to load address");
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to load address details"
-      });
+      console.error("❌ Error fetching address:", err);
+      setError("Failed to load address details");
     } finally {
       setLoading(false);
     }
@@ -60,62 +67,71 @@ export const EditAddress = () => {
     }));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!address.type || !address.street || !address.city || !address.state || !address.postalCode) {
+      setLoading(false);
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Fields",
+        text: "Please fill in all required fields"
+      });
+      return;
+    }
+
+    let message = "";
+    let endpoint = "";
+    let method = "";
+
+    if (isNewAddress) {
+      endpoint = "/user/address";
+      method = "post";
+      message = "Address added successfully";
+    } else {
+      endpoint = `/user/address/${id}`;
+      method = "put";
+      message = "Address updated successfully";
+    }
+
     try {
-      setLoading(true);
-      
-      // Validation
-      if (!address.type || !address.street || !address.city || !address.state || !address.postalCode) {
-        Swal.fire({
-          icon: "warning",
-          title: "Missing Fields",
-          text: "Please fill in all required fields"
-        });
-        return;
+      if (method === "post") {
+        await API.post(endpoint, address);
+      } else {
+        await API.put(endpoint, address);
       }
 
-      if (id === "new") {
-        // Create new address
-        const response = await API.post("/user/address", address);
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Address added successfully",
-          timer: 1500
-        });
-      } else {
-        // Update existing address
-        const response = await API.put(`/user/address/${id}`, address);
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Address updated successfully",
-          timer: 1500
-        });
-      }
-      
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: message,
+        timer: 1500
+      });
+
       setTimeout(() => {
         navigate("/profile");
       }, 1500);
-    } catch (err) {
-      console.error("Error saving address:", err);
+    } catch (apiErr) {
+      console.error(`❌ Error ${method === "post" ? "creating" : "updating"} address:`, apiErr);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: err.response?.data?.message || "Failed to save address"
+        text: apiErr.response?.data?.message || `Failed to ${method === "post" ? "add" : "update"} address`
       });
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading && id !== "new") {
+  if (loading && !isNewAddress) {
     return <div className="edit-address-container"><p>Loading...</p></div>;
   }
 
   return (
     <div className="edit-address-container">
-      <h2>{id === "new" ? "Add New Address" : "Edit Address"}</h2>
+      <h2>{isNewAddress ? "Add New Address" : "Edit Address"}</h2>
 
       {error && <div className="error-message">{error}</div>}
 

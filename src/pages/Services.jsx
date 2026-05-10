@@ -46,7 +46,7 @@ export const Services = () => {
 
   return (
     <div className="services">
-      <h1>Our Services</h1>
+      <h1 className=' text-3xl font-bold text-blue-700 justify-between text-center mb-8'>Our Services</h1>
       <div className="services-grid">
         {services.map((service, index) => (
           <div key={index} className="service-card">
@@ -56,7 +56,7 @@ export const Services = () => {
           </div>
         ))}
       </div>
-      <button onClick={()=> window.location.href = '/Contact'} className="contact-btn" >Contact Support</button>
+      <button onClick={()=> window.location.href = '/Contact'} className="contact-btn mt-10 text-center" >Contact Support</button>
     </div>
   );
 };

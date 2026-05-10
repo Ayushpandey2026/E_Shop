@@ -121,7 +121,7 @@ export const Product = () => {
       const exists = wishlist.some((i) => i._id === product._id);
       if (exists) {
         await API.delete(`/wishlist/${product._id}`);
-        setWishlist((prev) => prev.filter((i) => i._id !== product._id));
+        await fetchUserWishlist();
         Swal.fire({
           icon: "success",
           title: "Removed",
@@ -131,7 +131,7 @@ export const Product = () => {
         });
       } else {
         await API.post(`/wishlist/add`, { productId: product._id });
-        setWishlist((prev) => [...prev, product]);
+        await fetchUserWishlist();
         Swal.fire({
           icon: "success",
           title: "Added",

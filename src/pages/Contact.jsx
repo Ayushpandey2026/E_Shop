@@ -45,8 +45,8 @@ export const Contact = () => {
     }
     return (
         <div className="contact-container">
-            <h1>Contact Us</h1>
-            <p>Have a question or need support? We’d love to hear from you.</p>
+            <h1 className="text-3xl font-bold text-blue-500 text-center">Contact Us</h1>
+            <p className="text-xl text-center mt-5 mb-4">Have a question or need support? We’d love to hear from you.</p>
 
             <form className="contact-form" onSubmit={handleSubmit}>
                 <div className="form-group">

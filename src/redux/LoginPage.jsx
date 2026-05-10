@@ -27,36 +27,76 @@ export const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.email || !formData.password) {
+      Swal.fire({
+        icon: "warning",
+        title: "Incomplete Form",
+        text: "Please fill in email and password",
+      });
+      return;
+    }
+    
     setLoading(true);
     try {
+      console.log("📧 Logging in with:", { email: formData.email, role: formData.role });
+      
       const res = await axiosInstance.post("/auth/login", formData);
+      console.log("✅ Login response:", res.data);
+      
       const { token, user } = res.data;
 
-      if (token && user) {
-        setToken(token);
-        setUser(user);
-        dispatch(fetchCart(token));
+      if (!token || !user) {
+        throw new Error("Invalid response from server: missing token or user");
+      }
 
-        Swal.fire({
-          icon: "success",
-          title: "Login Successful!",
-          text: `Welcome back, ${user.name}!`,
-          timer: 1500,
-          showConfirmButton: false,
-        });
+      // Store in context
+      setToken(token);
+      setUser(user);
+      
+      // Fetch cart in background (don't wait)
+      dispatch(fetchCart(token)).catch(err => console.warn("⚠️ Cart fetch error:", err));
 
+      Swal.fire({
+        icon: "success",
+        title: "Login Successful!",
+        text: `Welcome back, ${user.name}!`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      // Redirect based on role
+      setTimeout(() => {
         if (user.role === "admin") {
           navigate("/admin");
         } else {
           navigate("/");
         }
-      }
+      }, 500);
+      
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Login failed";
+      console.error("❌ Login error:", err);
+      
+      let errorMessage = "Login failed";
+      
+      if (err.response?.status === 400) {
+        errorMessage = err.response?.data?.message || "Invalid email or password";
+      } else if (err.response?.status === 403) {
+        errorMessage = err.response?.data?.message || "Access denied for this role";
+      } else if (err.response?.status === 500) {
+        errorMessage = "Server error. Please try again later";
+      } else if (err.message) {
+        errorMessage = err.message;
+      } else if (!err.response) {
+        errorMessage = "Network error. Please check your connection";
+      }
+      
       Swal.fire({
         icon: "error",
         title: "Login Error",
         text: errorMessage,
+        confirmButtonColor: "#ef4444",
       });
     } finally {
       setLoading(false);

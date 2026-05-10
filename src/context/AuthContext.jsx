@@ -70,28 +70,42 @@ export const AuthProvider = ({ children }) => {
 
   const [user, setUserState] = useState(null);
   const [token, setTokenState] = useState(localStorage.getItem("token") || null);
+  const [loading, setLoading] = useState(false);
 
+  // Compute isLoggedIn from token state
   const isLoggedIn = !!token;
 
   // Public setToken function for signup/login
   const setToken = (newToken) => {
-    if (newToken) {
-      localStorage.setItem("token", newToken);
-      setTokenState(newToken);
-    } else {
-      localStorage.removeItem("token");
-      setTokenState(null);
+    try {
+      if (newToken) {
+        localStorage.setItem("token", newToken);
+        setTokenState(newToken);
+        console.log("✅ Token saved to localStorage and state");
+      } else {
+        localStorage.removeItem("token");
+        setTokenState(null);
+        console.log("✅ Token cleared from localStorage and state");
+      }
+    } catch (err) {
+      console.error("❌ Error managing token:", err);
     }
   };
 
   // Public setUser function for signup/login
   const setUser = (newUser) => {
-    if (newUser) {
-      localStorage.setItem("user", JSON.stringify(newUser));
-      setUserState(newUser);
-    } else {
-      localStorage.removeItem("user");
-      setUserState(null);
+    try {
+      if (newUser) {
+        localStorage.setItem("user", JSON.stringify(newUser));
+        setUserState(newUser);
+        console.log("✅ User saved to localStorage and state");
+      } else {
+        localStorage.removeItem("user");
+        setUserState(null);
+        console.log("✅ User cleared from localStorage and state");
+      }
+    } catch (err) {
+      console.error("❌ Error managing user:", err);
     }
   };
 
@@ -120,19 +134,31 @@ export const AuthProvider = ({ children }) => {
 
   // Restore session on refresh
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
+    try {
+      const savedUser = localStorage.getItem("user");
+      const savedToken = localStorage.getItem("token");
 
-    if (savedUser) setUserState(JSON.parse(savedUser));
-    if (savedToken) setTokenState(savedToken);
+      if (savedUser) {
+        setUserState(JSON.parse(savedUser));
+        console.log("✅ User restored from localStorage");
+      }
+      if (savedToken) {
+        setTokenState(savedToken);
+        console.log("✅ Token restored from localStorage");
+      }
+    } catch (err) {
+      console.error("❌ Error restoring session:", err);
+      localStorage.clear();
+    }
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        token,
-        isLoggedIn,
+        user: user,
+        token: token,
+        isLoggedIn: isLoggedIn,
+        loading: loading,
         setUser,
         setToken,
         login,

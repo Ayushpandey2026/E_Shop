@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useRef } from "react";
 import { FaSearch, FaShoppingCart, FaTruck, FaShieldAlt, FaHeadset, FaStar, FaFire, FaClock, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import SkeletonLoader from "../components/SkeletonLoader";
@@ -127,7 +128,21 @@ export const Home = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
+    waitForAnimate: true,
+    pauseOnHover: true,
   };
+
+  useEffect(() => {
+    return () => {
+      try {
+        if (sliderRef.current?.innerSlider?.play) {
+          sliderRef.current.innerSlider.play();
+        }
+      } catch (e) {
+        // Ignore autoplay cleanup errors
+      }
+    };
+  }, []);
 
   if (loading) return <SkeletonLoader />;
 

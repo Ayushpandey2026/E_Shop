@@ -22,6 +22,9 @@ export const ProductDetails = () => {
   const [product, setProduct] = useState(location.state?.product || null);
   const [similarProducts, setSimilarProducts] = useState([]);
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
+
+  const isValidWishlistId = (id) => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
 
   // Fetch product and similar products
   useEffect(() => {
@@ -88,11 +91,24 @@ export const ProductDetails = () => {
     }
   }, [isLoggedIn, product]);
 
+  // Check if product is in cart
+  useEffect(() => {
+    if (product && cartState.items) {
+      const inCart = cartState.items.some(item => item.productId?._id === product._id || item.productId === product._id);
+      setIsInCart(inCart);
+    }
+  }, [product, cartState.items]);
+
   const checkWishlistStatus = async () => {
+    if (!product || !isValidWishlistId(product._id)) {
+      setIsInWishlist(false);
+      return;
+    }
+
     try {
       const response = await API.get("/wishlist/my");
       const wishlist = response.data || [];
-      setIsInWishlist(wishlist.some(w => w._id === product._id));
+      setIsInWishlist(wishlist.some((w) => w._id === product._id));
     } catch (error) {
       console.error("Error checking wishlist:", error);
     }
@@ -113,6 +129,16 @@ export const ProductDetails = () => {
       return;
     }
 
+    if (!product || !isValidWishlistId(product._id)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid product",
+        text: "This product cannot be added to the wishlist.",
+        timer: 1500,
+      });
+      return;
+    }
+
     try {
       if (isInWishlist) {
         // Remove from wishlist
@@ -123,7 +149,7 @@ export const ProductDetails = () => {
           title: "Removed",
           text: "Product removed from wishlist",
           timer: 1200,
-          showConfirmButton: false
+          showConfirmButton: false,
         });
       } else {
         // Add to wishlist
@@ -134,7 +160,7 @@ export const ProductDetails = () => {
           title: "Added",
           text: "Product added to wishlist",
           timer: 1200,
-          showConfirmButton: false
+          showConfirmButton: false,
         });
       }
     } catch (error) {
@@ -143,7 +169,7 @@ export const ProductDetails = () => {
         icon: "error",
         title: "Error",
         text: "Failed to update wishlist",
-        timer: 1500
+        timer: 1500,
       });
     }
   };
@@ -336,14 +362,18 @@ export const ProductDetails = () => {
             <div className="space-y-4 mb-8">
               {/* Add to Cart Button */}
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleAddToCart}
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-4 px-6 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all disabled:opacity-50 shadow-lg shadow-indigo-200"
+                whileHover={!isInCart ? { scale: 1.02 } : {}}
+                whileTap={!isInCart ? { scale: 0.98 } : {}}
+                onClick={!isInCart ? handleAddToCart : () => navigate('/cart')}
+                disabled={loading && !isInCart}
+                className={`w-full py-4 px-6 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all shadow-lg ${
+                  isInCart
+                    ? 'bg-green-100 text-green-700 border-2 border-green-300 hover:bg-green-200'
+                    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white disabled:opacity-50 shadow-indigo-200'
+                }`}
               >
                 <ShoppingCart size={24} />
-                {loading ? "Adding..." : "Add to Cart"}
+                {isInCart ? "Already in Cart ✓" : loading ? "Adding..." : "Add to Cart"}
               </motion.button>
 
               {/* Buy Now Button */}
